@@ -13,7 +13,7 @@
   •
   <a href="https://github.com/openimsdk/openim-sdk-core">openim-sdk-core</a>
   •
-  <a href="https://github.com/openimsdk/open-im-sdk-dotnet">open-im-sdk-unity</a>
+  <a href="https://github.com/openimsdk/open-im-sdk-dotnet/tree/open-im-sdk-unity">open-im-sdk-unity</a>
 
 </p>
 
