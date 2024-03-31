@@ -1,0 +1,10 @@
+/.vscode
+/Library
+/Logs
+/Temp
+/obj
+/*.csproj
+/*.sln
+/UserSettings
+/Build
+/OpenIM
