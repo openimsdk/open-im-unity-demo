@@ -24,7 +24,7 @@ A OpenIM Unity demo. Currently only supports Windows and Android, with support f
 ## Tech Stack 🛠️
 
 - This is a Unity project.
-- App is built with [open-im-sdk-dotnet](https://github.com/openimsdk/open-im-sdk-dotnet) library.
+- App is built with [open-im-sdk-unity](https://github.com/openimsdk/open-im-sdk-dotnet/tree/open-im-sdk-unity) library.
 
 ## Dev Env 🛠️
 
