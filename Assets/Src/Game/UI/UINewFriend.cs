@@ -64,7 +64,7 @@ namespace Dawn.Game.UI
                 }
                 var item = itemNode.UserObjectData as UserRequestItem;
                 item.Name.text = info.FromUserID;
-                if (Player.Instance.FriendShip.HasFriend(info.FromUserID))
+                if (Player.Instance.FriendShip.IsFriend(info.FromUserID))
                 {
                     item.Tip.text = "已添加";
                     item.MenuRect.gameObject.SetActive(false);

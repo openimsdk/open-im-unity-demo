@@ -26,7 +26,7 @@ namespace Dawn.Game
             friendDic.Add(localFriend.FriendUserID, localFriend);
         }
 
-        public bool HasFriend(string userId)
+        public bool IsFriend(string userId)
         {
             return friendDic.ContainsKey(userId);
         }

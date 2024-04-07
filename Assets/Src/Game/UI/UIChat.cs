@@ -10,7 +10,7 @@ namespace Dawn.Game.UI
     public class UIChat : UGuiForm
     {
         Button backBtn;
-        Button userInfoBtn;
+        Button chatInfoBtn;
         TextMeshProUGUI userName;
         LoopListView2 chatList;
         TMP_InputField inputMsg;
@@ -24,7 +24,7 @@ namespace Dawn.Game.UI
 
             backBtn = GetButton("Panel/content/top/back");
             userName = GetTextPro("Panel/content/top/username");
-            userInfoBtn = GetButton("Panel/content/top/userinfo");
+            chatInfoBtn = GetButton("Panel/content/top/chatinfo");
             chatList = GetListView("Panel/content/center");
             inputMsg = GetInputField("Panel/content/bottom/input");
             sendBtn = GetButton("Panel/content/bottom/send");
@@ -87,6 +87,10 @@ namespace Dawn.Game.UI
             OnClick(backBtn, () =>
             {
                 CloseSelf();
+            });
+            OnClick(chatInfoBtn, () =>
+            {
+                GameEntry.UI.OpenUI("ChatInfo", selectFriend);
             });
             RefreshList(chatList, msgList.Count);
             var conversation = Player.Instance.Conversation.GetFriendConversation(selectFriend.FriendUserID);

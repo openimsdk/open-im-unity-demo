@@ -70,7 +70,7 @@ namespace Dawn.Game.UI
                 item.Name.text = info.FriendUserID;
                 OnClick(item.Btn, () =>
                 {
-                    GameEntry.UI.OpenUI("Chat", info);
+                    GameEntry.UI.OpenUI("UserInfo", info);
                 });
                 return itemNode;
             });

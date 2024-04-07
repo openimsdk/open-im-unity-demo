@@ -63,7 +63,7 @@ namespace Dawn.Game.UI
                 OnClick(item.Btn, () =>
                 {
                     CloseSelf();
-                    GameEntry.UI.OpenUI("UserInfo", info);
+                    GameEntry.UI.OpenUI("UserInfo", info.PublicInfo);
                 });
                 return itemNode;
             });
