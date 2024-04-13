@@ -29,11 +29,7 @@ namespace Dawn
                 // 初始化资源未完成则继续等待
                 return;
             }
-        #if UNITY_EDITOR
             ChangeState<ProcedurePreload>(procedureOwner);
-        #elif UNITY_WEBGL
-            ChangeState<ProcedureDownloadResource>(procedureOwner);
-        #endif
         }
 
         private void OnInitResourcesComplete()

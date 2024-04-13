@@ -8,29 +8,9 @@ namespace Dawn.Game
 {
     public class FriendShip : IFriendShipListener
     {
-        public List<LocalFriend> FriendList;
-        public List<LocalFriendRequest> RequestList;
-        public List<LocalFriendRequest> ApplicationList;
-        public Dictionary<string, LocalFriend> friendDic;
         public FriendShip()
         {
-            FriendList = new List<LocalFriend>();
-            RequestList = new List<LocalFriendRequest>();
-            ApplicationList = new List<LocalFriendRequest>();
-            friendDic = new Dictionary<string, LocalFriend>();
         }
-
-        public void AddLocalFriend(LocalFriend localFriend)
-        {
-            FriendList.Add(localFriend);
-            friendDic.Add(localFriend.FriendUserID, localFriend);
-        }
-
-        public bool IsFriend(string userId)
-        {
-            return friendDic.ContainsKey(userId);
-        }
-
         public void OnBlackAdded(LocalBlack blackInfo)
         {
         }

@@ -15,9 +15,8 @@ namespace Dawn.Game.UI
         LoopListView2 chatList;
         TMP_InputField inputMsg;
         Button sendBtn;
-
-        LocalFriend selectFriend = null;
         List<MsgStruct> msgList;
+        LocalConversation conversation;
         protected override void OnInit(object userData)
         {
             base.OnInit(userData);
@@ -30,15 +29,7 @@ namespace Dawn.Game.UI
             sendBtn = GetButton("Panel/content/bottom/send");
 
             msgList = new List<MsgStruct>();
-        }
 
-        protected override void OnOpen(object userData)
-        {
-            base.OnOpen(userData);
-
-            selectFriend = userData as LocalFriend;
-
-            userName.text = selectFriend.FriendUserID;
             chatList.InitListView(msgList.Count, (list, index) =>
             {
                 if (index < 0)
@@ -76,6 +67,16 @@ namespace Dawn.Game.UI
                 }
                 return itemNode;
             });
+        }
+
+        protected override void OnOpen(object userData)
+        {
+            base.OnOpen(userData);
+
+            conversation = userData as LocalConversation;
+
+            userName.text = conversation.UserID;
+
             inputMsg.onSubmit.AddListener((value) =>
             {
                 TrySendTextMsg();
@@ -90,10 +91,10 @@ namespace Dawn.Game.UI
             });
             OnClick(chatInfoBtn, () =>
             {
-                GameEntry.UI.OpenUI("ChatInfo", selectFriend);
+                GameEntry.UI.OpenUI("ChatInfo", conversation.UserID);
             });
             RefreshList(chatList, msgList.Count);
-            var conversation = Player.Instance.Conversation.GetFriendConversation(selectFriend.FriendUserID);
+
             if (conversation != null)
             {
                 IMSDK.GetAdvancedHistoryMessageList((list, err, msg) =>
@@ -121,8 +122,6 @@ namespace Dawn.Game.UI
         protected override void OnClose(bool isShutdown, object userData)
         {
             base.OnClose(isShutdown, userData);
-
-            chatList.Reset();
             msgList.Clear();
         }
 
@@ -146,7 +145,7 @@ namespace Dawn.Game.UI
                 {
                     Debug.LogError(errCode + "" + errMsg);
                 }
-            }, msgStruct, selectFriend.FriendUserID, "", new OfflinePushInfo()
+            }, msgStruct, conversation.UserID, "", new OfflinePushInfo()
             {
             });
             inputMsg.text = "";

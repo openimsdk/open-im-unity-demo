@@ -288,7 +288,7 @@ namespace UnityGameFramework.Editor.ResourceTools
             }
 
             ScanSourceAssets();
-            ScanLuaSource();
+            // ScanLuaSource();
 
             m_ResourceCollection.Load();
 

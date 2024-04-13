@@ -15,10 +15,11 @@ namespace Dawn.Game.Event
                 return EventId;
             }
         }
-
+        public ConnStatus ConnStatus;
 
         public override void Clear()
         {
+            ConnStatus = ConnStatus.Empty;
         }
     }
 }

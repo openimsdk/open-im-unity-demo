@@ -11,10 +11,6 @@ namespace Dawn.Game.UI
 
     public class UIWaiting : UGuiForm
     {
-        void Start()
-        {
-        }
-
     }
 }
 

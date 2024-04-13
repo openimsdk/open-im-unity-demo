@@ -18,6 +18,33 @@ namespace Dawn.Game
         string dataDir = Application.persistentDataPath + "/OpenIM";
         string logDir = Application.persistentDataPath + "/OpenIM/Logs";
 #endif
+        void Awake()
+        {
+            Debug.Log("WsAddr:" + wsAddr);
+            Debug.Log("APIAddr:" + apiAddr);
+            Debug.Log("PlatformId:" + PlatformID + "(" + PlatformID + ")");
+            Debug.Log("WsAddr:" + wsAddr);
+            Debug.Log("APIAddr:" + apiAddr);
+            Debug.Log("DataDir:" + dataDir);
+            Debug.Log("LogDir:" + logDir);
+            var config = new IMConfig()
+            {
+                PlatformID = (int)PlatformID,
+                WsAddr = wsAddr,
+                ApiAddr = apiAddr,
+                DataDir = dataDir,
+                LogLevel = 5,
+                IsLogStandardOutput = true,
+                LogFilePath = logDir,
+                IsExternalExtensions = true,
+            };
+            var res = IMSDK.InitSDK(config, Player.Instance);
+            if (!res)
+            {
+                Debug.Log("InitSDK:" + false);
+            }
+            Debug.Log("InitSDK:" + res);
+        }
         public PlatformID PlatformID
         {
             get
@@ -41,46 +68,21 @@ namespace Dawn.Game
                 return PlatformID.None;
             }
         }
-        // Start is called before the first frame update
         void Start()
         {
-            Debug.Log("WsAddr:" + wsAddr);
-            Debug.Log("APIAddr:" + apiAddr);
-            Debug.Log("PlatformId:" + PlatformID + "  " + (int)PlatformID);
-            Debug.Log("WsAddr:" + wsAddr);
-            Debug.Log("APIAddr:" + apiAddr);
-            Debug.Log("DataDir:" + dataDir);
-            Debug.Log("LogDir:" + logDir);
-            var config = new IMConfig()
-            {
-                PlatformID = (int)PlatformID,
-                WsAddr = wsAddr,
-                ApiAddr = apiAddr,
-                DataDir = dataDir,
-                LogLevel = 5,
-                IsLogStandardOutput = true,
-                LogFilePath = logDir,
-                IsExternalExtensions = true,
-            };
-            var res = IMSDK.InitSDK(config, Player.Instance);
-            if (!res)
-            {
-                Debug.Log("InitSDK:" + false);
-            }
-            Debug.Log("InitSDK:" + res);
-        }
 
-        // Update is called once per frame
+        }
         void Update()
         {
             IMSDK.Polling();
         }
 
-        void OnDestroy()
+        void OnApplicationQuit()
         {
+#if !UNITY_EDITOR
             IMSDK.UnInitSDK();
+#endif
         }
     }
-
 }
 

@@ -7,7 +7,10 @@ namespace Dawn.Game
     {
         NoLogin, Logining, LoginSuc, LoginFailed
     }
-
+    public enum ConnStatus
+    {
+        Empty, OnConnecting, ConnSuc, ConnFailed, KickOffline, TokenExpired
+    }
     public class Player : IConnCallBack
     {
         public string UserId;
@@ -55,42 +58,42 @@ namespace Dawn.Game
         {
             GameEntry.Event.FireNow(this, new Event.OnConnStatusChange()
             {
-
+                ConnStatus = ConnStatus.OnConnecting
             });
         }
+
         public void OnConnectSuccess()
         {
             GameEntry.Event.FireNow(this, new Event.OnConnStatusChange()
             {
-
+                ConnStatus = ConnStatus.ConnSuc
             });
         }
         public void OnConnectFailed(int errCode, string errMsg)
         {
             GameEntry.Event.FireNow(this, new Event.OnConnStatusChange()
             {
-
+                ConnStatus = ConnStatus.ConnFailed
             });
         }
         public void OnKickedOffline()
         {
             GameEntry.Event.FireNow(this, new Event.OnConnStatusChange()
             {
-
+                ConnStatus = ConnStatus.KickOffline
             });
         }
         public void OnUserTokenExpired()
         {
             GameEntry.Event.FireNow(this, new Event.OnConnStatusChange()
             {
-
+                ConnStatus = ConnStatus.TokenExpired
             });
         }
 
         public void Login(string userId, string token)
         {
-            Debug.Log("UserId:" + userId);
-            Debug.Log("Token:" + token);
+            Debug.Log("Login:" + userId + " " + token);
             IMSDK.Login(userId, token, (suc, errCode, errMsg) =>
             {
                 if (suc)
@@ -113,70 +116,57 @@ namespace Dawn.Game
             UserId = userId;
             Token = token;
             Status = UserStatus.LoginSuc;
-            LoadData();
 
             GameEntry.Event.Fire(this, new Event.OnLoginStatusChange()
             {
                 UserStatus = UserStatus.LoginSuc
             });
         }
-        public void UnLogin()
-        {
-            IMSDK.Logout((suc, errCode, errMsg) =>
-            {
-                if (suc)
-                {
-                }
-                else
-                {
-                }
-            });
-        }
 
         public void LoadData()
         {
-            IMSDK.GetFriendList((list, err, msg) =>
-            {
-                if (list != null)
-                {
-                    foreach (var info in list)
-                    {
-                        FriendShip.AddLocalFriend(info.FriendInfo);
-                    }
-                    GameEntry.Event.Fire(this, new Event.OnFriendAdd()
-                    {
-                        List = list
-                    });
-                }
-                else
-                {
-                    Debug.LogError(err + ":" + msg);
-                }
-            });
-            IMSDK.GetFriendApplicationListAsApplicant((list, err, msg) =>
-            {
-                if (list != null)
-                {
-                    FriendShip.RequestList.AddRange(list);
-                    // Dispator.Broadcast(EventType.OnFirendRequestChange);
-                }
-                else
-                {
-                    Debug.LogError(err + ":" + msg);
-                }
-            });
-            IMSDK.GetFriendApplicationListAsRecipient((list, err, msg) =>
-            {
-                if (list != null)
-                {
-                    FriendShip.ApplicationList.AddRange(list);
-                    // Dispator.Broadcast(EventType.OnFirendApplicationChange);
-                }
-                else
-                {
-                    Debug.LogError(err + ":" + msg);
-                }
-            });
+            // IMSDK.GetFriendList((list, err, msg) =>
+            // {
+            //     if (list != null)
+            //     {
+            //         foreach (var info in list)
+            //         {
+            //             FriendShip.AddLocalFriend(info.FriendInfo);
+            //         }
+            //         GameEntry.Event.Fire(this, new Event.OnFriendAdd()
+            //         {
+            //             List = list
+            //         });
+            //     }
+            //     else
+            //     {
+            //         Debug.LogError(err + ":" + msg);
+            //     }
+            // });
+            // IMSDK.GetFriendApplicationListAsApplicant((list, err, msg) =>
+            // {
+            //     if (list != null)
+            //     {
+            //         FriendShip.RequestList.AddRange(list);
+            //         // Dispator.Broadcast(EventType.OnFirendRequestChange);
+            //     }
+            //     else
+            //     {
+            //         Debug.LogError(err + ":" + msg);
+            //     }
+            // });
+            // IMSDK.GetFriendApplicationListAsRecipient((list, err, msg) =>
+            // {
+            //     if (list != null)
+            //     {
+            //         FriendShip.ApplicationList.AddRange(list);
+            //         // Dispator.Broadcast(EventType.OnFirendApplicationChange);
+            //     }
+            //     else
+            //     {
+            //         Debug.LogError(err + ":" + msg);
+            //     }
+            // });
         }
     }
 }

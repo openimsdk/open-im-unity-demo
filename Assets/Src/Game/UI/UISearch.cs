@@ -31,15 +31,6 @@ namespace Dawn.Game.UI
             searchResList = GetListView("Panel/content/searchresult/list");
             backBtn = GetButton("Panel/content/search/back");
             searchEmpty = GetRectTransform("Panel/content/searchresult/empty");
-        }
-
-        protected override void OnOpen(object userData)
-        {
-            base.OnOpen(userData);
-            searchResList.gameObject.SetActive(false);
-            searchEmpty.gameObject.SetActive(false);
-            searchInput.text = "";
-            searchInput.ActivateInputField();
             searchResList.InitListView(0, (list, index) =>
             {
                 if (index < 0)
@@ -67,6 +58,16 @@ namespace Dawn.Game.UI
                 });
                 return itemNode;
             });
+        }
+
+        protected override void OnOpen(object userData)
+        {
+            base.OnOpen(userData);
+            searchResList.gameObject.SetActive(false);
+            searchEmpty.gameObject.SetActive(false);
+            searchInput.text = "";
+            searchInput.ActivateInputField();
+
             OnClick(searchBtn, () =>
             {
                 if (searchInput.text == "")
@@ -106,8 +107,6 @@ namespace Dawn.Game.UI
         protected override void OnClose(bool isShutdown, object userData)
         {
             base.OnClose(isShutdown, userData);
-
-            searchResList.Reset();
         }
 
     }

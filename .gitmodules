@@ -1,4 +1,0 @@
-[submodule "Assets/open-im-sdk"]
-	path = Assets/open-im-sdk
-	url = https://github.com/openimsdk/open-im-sdk-dotnet.git
-	branch = open-im-sdk-unity

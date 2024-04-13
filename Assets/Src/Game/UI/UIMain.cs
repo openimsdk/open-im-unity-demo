@@ -10,26 +10,29 @@ namespace Dawn.Game.UI
 {
     public enum NavMenu
     {
-        World, Channel, Group, Friend, Owner
+        Conversation, Group, Friend, Owner
     }
 
     public partial class UIMain : UGuiForm
     {
+        TextMeshProUGUI title;
+        Button topSearchBtn;
+        Button topAddBtn;
         Toggle[] toggles;
-
-        NavMenu selectNavMenu = NavMenu.World;
+        NavMenu selectNavMenu = NavMenu.Conversation;
 
         protected override void OnInit(object userData)
         {
             base.OnInit(userData);
-            toggles = new Toggle[5];
-            toggles[(int)NavMenu.World] = GetToggle("Panel/content/bottom/menu/world");
-            toggles[(int)NavMenu.Channel] = GetToggle("Panel/content/bottom/menu/channel");
+            title = GetTextPro("Panel/content/top/title");
+            topSearchBtn = GetButton("Panel/content/top/search");
+            topAddBtn = GetButton("Panel/content/top/add");
+            toggles = new Toggle[4];
+            toggles[(int)NavMenu.Conversation] = GetToggle("Panel/content/bottom/menu/conversaton");
             toggles[(int)NavMenu.Group] = GetToggle("Panel/content/bottom/menu/group");
             toggles[(int)NavMenu.Friend] = GetToggle("Panel/content/bottom/menu/friend");
             toggles[(int)NavMenu.Owner] = GetToggle("Panel/content/bottom/menu/owner");
-            InitWorld();
-            InitChannel();
+            InitConversation();
             InitGroup();
             InitFriend();
             InitOwner();
@@ -39,20 +42,13 @@ namespace Dawn.Game.UI
         {
             base.OnOpen(userData);
 
-            toggles[(int)NavMenu.World].onValueChanged.AddListener((ison) =>
+            toggles[(int)NavMenu.Conversation].onValueChanged.AddListener((ison) =>
             {
-                worldRoot.gameObject.SetActive(ison);
+                conversationRoot.gameObject.SetActive(ison);
                 if (ison)
                 {
-                    selectNavMenu = NavMenu.World;
-                }
-            });
-            toggles[(int)NavMenu.Channel].onValueChanged.AddListener((ison) =>
-            {
-                channelRoot.gameObject.SetActive(ison);
-                if (ison)
-                {
-                    selectNavMenu = NavMenu.Channel;
+                    title.text = "会话";
+                    selectNavMenu = NavMenu.Conversation;
                 }
             });
             toggles[(int)NavMenu.Group].onValueChanged.AddListener((ison) =>
@@ -60,6 +56,7 @@ namespace Dawn.Game.UI
                 groupRoot.gameObject.SetActive(ison);
                 if (ison)
                 {
+                    title.text = "群组";
                     selectNavMenu = NavMenu.Group;
                 }
             });
@@ -68,6 +65,7 @@ namespace Dawn.Game.UI
                 friendRoot.gameObject.SetActive(ison);
                 if (ison)
                 {
+                    title.text = "好友";
                     selectNavMenu = NavMenu.Friend;
                 }
             });
@@ -79,18 +77,24 @@ namespace Dawn.Game.UI
                     selectNavMenu = NavMenu.Owner;
                 }
             });
+            OnClick(topAddBtn, () =>
+            {
+                
+            });
+            OnClick(topSearchBtn, () =>
+            {
+                GameEntry.UI.OpenUI("Search", this);
+            });
 
-            selectNavMenu = NavMenu.Friend;
+            selectNavMenu = NavMenu.Conversation;
             toggles[(int)selectNavMenu].isOn = true;
 
-            worldRoot.gameObject.SetActive(selectNavMenu == NavMenu.World);
-            channelRoot.gameObject.SetActive(selectNavMenu == NavMenu.Channel);
+            conversationRoot.gameObject.SetActive(selectNavMenu == NavMenu.Conversation);
             groupRoot.gameObject.SetActive(selectNavMenu == NavMenu.Group);
             friendRoot.gameObject.SetActive(selectNavMenu == NavMenu.Friend);
             ownerRoot.gameObject.SetActive(selectNavMenu == NavMenu.Owner);
 
-            OpenWorld();
-            OpenChannel();
+            OpenConversation();
             OpenGroup();
             OpenFriend();
             OpenOwner();
@@ -99,8 +103,7 @@ namespace Dawn.Game.UI
         protected override void OnClose(bool isShutdown, object userData)
         {
             base.OnClose(isShutdown, userData);
-            CloseWorld();
-            CloseChannel();
+            CloseConversation();
             CloseGroup();
             CloseFriend();
             CloseOwner();

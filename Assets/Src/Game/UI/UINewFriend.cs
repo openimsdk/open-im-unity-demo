@@ -1,10 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using SuperScrollView;
-using UnityGameFramework.Runtime;
 using open_im_sdk;
 
 namespace Dawn.Game.UI
@@ -28,14 +26,6 @@ namespace Dawn.Game.UI
             base.OnInit(userData);
             backBtn = GetButton("Panel/content/top/back");
             requestList = GetListView("Panel/content/list");
-        }
-        protected override void OnOpen(object userData)
-        {
-            base.OnOpen(userData);
-            OnClick(backBtn, () =>
-            {
-                CloseSelf();
-            });
             requestList.InitListView(0, (list, index) =>
             {
                 if (index < 0)
@@ -64,53 +54,68 @@ namespace Dawn.Game.UI
                 }
                 var item = itemNode.UserObjectData as UserRequestItem;
                 item.Name.text = info.FromUserID;
-                if (Player.Instance.FriendShip.IsFriend(info.FromUserID))
-                {
-                    item.Tip.text = "已添加";
-                    item.MenuRect.gameObject.SetActive(false);
-                }
-                else
-                {
-                    item.Tip.text = "";
-                    item.MenuRect.gameObject.SetActive(true);
-                    OnClick(item.AcceptBtn, () =>
-                    {
-                        IMSDK.AcceptFriendApplication((suc, errCode, errMsg) =>
-                        {
-                            if (suc)
-                            {
-                                RefreshList(requestList, requestInfoList.Count);
-                            }
-                            else
-                            {
-                                Debug.Log(errCode + ":" + errMsg);
-                            }
-                        }, new ProcessFriendApplicationParams()
-                        {
-                            ToUserID = info.FromUserID
-                        });
-                    });
-                    OnClick(item.RefuseBtn, () =>
-                    {
-                        IMSDK.RefuseFriendApplication((suc, errCode, errMsg) =>
-                        {
-                            if (suc)
-                            {
 
-                            }
-                            else
-                            {
-                                Debug.Log(errCode + ":" + errMsg);
-                            }
-                        }, new ProcessFriendApplicationParams()
+                IMSDK.CheckFriend((list, err, errMsg) =>
+                {
+                    if (list != null && list.Count == 1 && list[0].UserID == info.FromUserID)
+                    {
+                        if (list[0].Result == 1)
                         {
-                            ToUserID = info.FromUserID
-                        });
-                    });
-                }
+                            item.Tip.text = "已添加";
+                            item.MenuRect.gameObject.SetActive(false);
+                        }
+                        else
+                        {
+                            item.Tip.text = "";
+                            item.MenuRect.gameObject.SetActive(true);
+                            OnClick(item.AcceptBtn, () =>
+                            {
+                                IMSDK.AcceptFriendApplication((suc, errCode, errMsg) =>
+                                {
+                                    if (suc)
+                                    {
+                                        RefreshList(requestList, requestInfoList.Count);
+                                    }
+                                    else
+                                    {
+                                        Debug.Log(errCode + ":" + errMsg);
+                                    }
+                                }, new ProcessFriendApplicationParams()
+                                {
+                                    ToUserID = info.FromUserID
+                                });
+                            });
+                            OnClick(item.RefuseBtn, () =>
+                            {
+                                IMSDK.RefuseFriendApplication((suc, errCode, errMsg) =>
+                                {
+                                    if (suc)
+                                    {
 
+                                    }
+                                    else
+                                    {
+                                        Debug.Log(errCode + ":" + errMsg);
+                                    }
+                                }, new ProcessFriendApplicationParams()
+                                {
+                                    ToUserID = info.FromUserID
+                                });
+                            });
+                        }
+                    }
+                }, new string[] { info.FromUserID });
                 return itemNode;
             });
+        }
+        protected override void OnOpen(object userData)
+        {
+            base.OnOpen(userData);
+            OnClick(backBtn, () =>
+            {
+                CloseSelf();
+            });
+
 
             IMSDK.GetFriendApplicationListAsRecipient((list, errCode, errMsg) =>
             {
@@ -129,7 +134,6 @@ namespace Dawn.Game.UI
         protected override void OnClose(bool isShutdown, object userData)
         {
             base.OnClose(isShutdown, userData);
-            requestList.Reset();
         }
     }
 }

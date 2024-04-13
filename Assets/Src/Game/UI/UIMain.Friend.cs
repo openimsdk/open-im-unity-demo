@@ -5,6 +5,7 @@ using SuperScrollView;
 using System.Collections.Generic;
 using Dawn.Game.Event;
 using GameFramework.Event;
+using open_im_sdk;
 
 namespace Dawn.Game.UI
 {
@@ -25,28 +26,15 @@ namespace Dawn.Game.UI
     {
         RectTransform friendRoot;
 
-        Button searchFriendBtn;
         Button newFriendBtn;
         LoopListView2 friendList;
+
+        List<FullUserInfo> userInfos;
         void InitFriend()
         {
             friendRoot = GetRectTransform("Panel/content/center/friend");
-            searchFriendBtn = GetButton("Panel/content/center/friend/search/btn");
-            newFriendBtn = GetButton("Panel/content/center/friend/newfriend/btn");
+            newFriendBtn = GetButton("Panel/content/center/friend/newfriend");
             friendList = GetListView("Panel/content/center/friend/list");
-        }
-
-        void OpenFriend()
-        {
-            OnClick(searchFriendBtn, () =>
-            {
-                GameEntry.UI.OpenUI("Search", this);
-            });
-            OnClick(newFriendBtn, () =>
-            {
-                GameEntry.UI.OpenUI("NewFriend", this);
-            });
-
             friendList.InitListView(0, (list, index) =>
             {
                 if (index < 0)
@@ -66,27 +54,39 @@ namespace Dawn.Game.UI
                     itemNode.IsInitHandlerCalled = true;
                 }
                 FriendItem item = itemNode.UserObjectData as FriendItem;
-                var info = Player.Instance.FriendShip.FriendList[index];
-                item.Name.text = info.FriendUserID;
+                var info = userInfos[index];
+                item.Name.text = info.FriendInfo.FriendUserID;
                 OnClick(item.Btn, () =>
                 {
-                    GameEntry.UI.OpenUI("UserInfo", info);
+                    GameEntry.UI.OpenUI("UserInfo", info.FriendInfo);
                 });
                 return itemNode;
             });
-            RefreshList(friendList, Player.Instance.FriendShip.FriendList.Count);
-
-            GameEntry.Event.Subscribe(OnFriendAdd.EventId, handleFriendAdd);
         }
 
-        void handleFriendAdd(object sender, GameEventArgs gameEventArgs)
+        void OpenFriend()
         {
-            RefreshList(friendList, Player.Instance.FriendShip.FriendList.Count);
+            OnClick(newFriendBtn, () =>
+            {
+                GameEntry.UI.OpenUI("NewFriend", this);
+            });
+
+            IMSDK.GetFriendList((list, err, errMsg) =>
+            {
+                if (list != null)
+                {
+                    userInfos = list;
+                    RefreshList(friendList, userInfos.Count);
+                }
+                else
+                {
+                    Debug.LogError(errMsg);
+                }
+            });
         }
 
         void CloseFriend()
         {
-            GameEntry.Event.Unsubscribe(OnFriendAdd.EventId, handleFriendAdd);
         }
     }
 }

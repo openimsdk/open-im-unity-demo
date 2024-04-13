@@ -41,28 +41,6 @@ namespace Dawn.Game.UI
             historyList = GetListView("Panel/switchPanel/content/list");
             closeSwitchBtn = GetButton("Panel/switchPanel/content/back");
             switchPanel.gameObject.SetActive(false);
-        }
-        protected override void OnOpen(object userData)
-        {
-            base.OnOpen(userData);
-
-            userId.text = "yejian001";
-            token.text = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOiJ5ZWppYW4wMDEiLCJQbGF0Zm9ybUlEIjozLCJleHAiOjE3MjAwOTYyMTAsIm5iZiI6MTcxMjMxOTkxMCwiaWF0IjoxNzEyMzIwMjEwfQ.YpDgoeb4hkUhcmg33VEaYHypBJWrNTZOp3w7SxtUTKc";
-
-            OnClick(loginBtn, () =>
-            {
-                login();
-            });
-            OnClick(switchBtn, () =>
-            {
-                switchPanel.gameObject.SetActive(true);
-            });
-
-            OnClick(closeSwitchBtn, () =>
-            {
-                switchPanel.gameObject.SetActive(false);
-            });
-
             historyList.InitListView(0, (list, index) =>
             {
                 if (index < 0)
@@ -81,23 +59,43 @@ namespace Dawn.Game.UI
                     itemNode.IsInitHandlerCalled = true;
                 }
                 var item = itemNode.UserObjectData as UserHistoryItem;
-                // LocalUserIdToken data = ChatApp.GetInstance().LocalCacheData.LocalUserTokens[index];
-                // item.text.text = data.UserId;
-                // item.btn.onClick.RemoveAllListeners();
-                // item.btn.onClick.AddListener(() =>
-                // {
-                //     userId.text = data.UserId;
-                //     token.text = data.Token;
-                //     historyPanel.gameObject.SetActive(false);
-                // });
-
                 return itemNode;
+            });
+        }
+        protected override void OnOpen(object userData)
+        {
+            base.OnOpen(userData);
+
+            userId.text = "";
+            token.text = "";
+#if UNITY_EDITOR_WIN
+            userId.text = "yejian001";
+            token.text = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOiJ5ZWppYW4wMDEiLCJQbGF0Zm9ybUlEIjozLCJleHAiOjE3MjA1MzA2NzEsIm5iZiI6MTcxMjc1NDM3MSwiaWF0IjoxNzEyNzU0NjcxfQ.eU_wa1lzQdhju313liT0wbw9dQ-9nWJmSoP2bGGnaeM";
+#endif
+            OnClick(loginBtn, () =>
+            {
+                login();
+            });
+            OnClick(switchBtn, () =>
+            {
+                switchPanel.gameObject.SetActive(true);
+            });
+
+            OnClick(closeSwitchBtn, () =>
+            {
+                switchPanel.gameObject.SetActive(false);
             });
             historyList.SetListItemCount(0);
 
             // 自动登录
-            login();
+            // login();
         }
+
+        protected override void OnClose(bool isShutdown, object userData)
+        {
+            base.OnClose(isShutdown, userData);
+        }
+
         void login()
         {
             if (userId.text == "")
