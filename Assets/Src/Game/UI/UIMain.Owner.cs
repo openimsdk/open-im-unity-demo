@@ -4,6 +4,8 @@ using UnityEngine.UI;
 using SuperScrollView;
 using open_im_sdk;
 using System.Collections.Generic;
+using Dawn.Game.Event;
+using GameFramework.Event;
 
 namespace Dawn.Game.UI
 {
@@ -13,6 +15,8 @@ namespace Dawn.Game.UI
         Image ownerIcon;
         TextMeshProUGUI ownerName;
         Button setOwnerInfoBtn;
+
+        Button settingBtn;
         Button logoutBtn;
 
         void InitOwner()
@@ -21,13 +25,20 @@ namespace Dawn.Game.UI
             ownerIcon = GetImage("Panel/content/center/owner/top/icon");
             ownerName = GetTextPro("Panel/content/center/owner/top/name");
             setOwnerInfoBtn = GetButton("Panel/content/center/owner/center/setuserinfo");
+            settingBtn = GetButton("Panel/content/center/owner/center/setting");
             logoutBtn = GetButton("Panel/content/center/owner/center/logout");
         }
 
         void OpenOwner()
         {
-            ownerName.text = Player.Instance.UserId;
-
+            OnClick(setOwnerInfoBtn, () =>
+            {
+                GameEntry.UI.OpenUI("SetSelfInfo");
+            });
+            OnClick(settingBtn, () =>
+            {
+                GameEntry.UI.OpenUI("Setting");
+            });
             OnClick(logoutBtn, () =>
             {
                 IMSDK.Logout((suc, err, errMsg) =>
@@ -42,10 +53,32 @@ namespace Dawn.Game.UI
                     }
                 });
             });
+            RefreshUserInfo();
+            GameEntry.Event.Subscribe(OnSelfInfoChange.EventId, OnSelfInfoChane);
+        }
+        void RefreshUserInfo()
+        {
+            ownerName.text = "";
+            IMSDK.GetSelfUserInfo((localUser, err, errMsg) =>
+            {
+                if (localUser != null)
+                {
+                    ownerName.text = localUser.Nickname;
+                    ownerIcon.sprite = GameEntry.SpriteAltas.GetSprite("headicon", localUser.FaceURL);
+                }
+                else
+                {
+                    GameEntry.UI.Tip(errMsg);
+                }
+            });
+        }
+        void OnSelfInfoChane(object sender, GameEventArgs args)
+        {
+            RefreshUserInfo();
         }
         void CloseOwner()
         {
-
+            GameEntry.Event.Unsubscribe(OnSelfInfoChange.EventId, OnSelfInfoChane);
         }
     }
 }

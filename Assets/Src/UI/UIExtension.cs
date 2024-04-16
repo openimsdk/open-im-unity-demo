@@ -68,7 +68,7 @@ namespace Dawn
         {
             return ui.OpenUIForm(string.Format("Assets/BundleResources/UI/{0}.prefab", name), "OverLayer", userData);
         }
-        public static void ShowTip(string tip)
+        public static void Tip(this UIComponent ui, string tip)
         {
             Debug.Log("Tip:" + tip);
         }

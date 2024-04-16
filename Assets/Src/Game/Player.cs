@@ -13,10 +13,7 @@ namespace Dawn.Game
     }
     public class Player : IConnCallBack
     {
-        public string UserId;
-        public string Token;
         static Player instance;
-
         public static Player Instance
         {
             get
@@ -113,8 +110,6 @@ namespace Dawn.Game
         }
         public void OnLoginSuc(string userId, string token)
         {
-            UserId = userId;
-            Token = token;
             Status = UserStatus.LoginSuc;
 
             GameEntry.Event.Fire(this, new Event.OnLoginStatusChange()

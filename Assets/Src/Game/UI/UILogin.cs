@@ -8,59 +8,28 @@ using UnityGameFramework.Runtime;
 using Dawn.Game.Event;
 using System;
 using open_im_sdk;
+using System.Text;
 
 namespace Dawn.Game.UI
 {
-    public class UserHistoryItem
-    {
-        public Button btn;
-        public TextMeshProUGUI text;
-    }
-
     public class UILogin : UGuiForm
     {
         TMP_InputField userId;
         TMP_InputField token;
         Button loginBtn;
+        Button registerBtn;
 
-        Button switchBtn;
-        RectTransform switchPanel;
-        LoopListView2 historyList;
-        Button closeSwitchBtn;
-
+        Button requestTokenBtn;
 
         protected override void OnInit(object userData)
         {
             base.OnInit(userData);
-
             userId = GetInputField("Panel/userId/input");
             token = GetInputField("Panel/token/input");
             loginBtn = GetButton("Panel/login");
-            switchBtn = GetButton("Panel/switch");
-            switchPanel = GetRectTransform("Panel/switchPanel");
-            historyList = GetListView("Panel/switchPanel/content/list");
-            closeSwitchBtn = GetButton("Panel/switchPanel/content/back");
-            switchPanel.gameObject.SetActive(false);
-            historyList.InitListView(0, (list, index) =>
-            {
-                if (index < 0)
-                {
-                    return null;
-                }
-                LoopListViewItem2 itemNode = null;
-                itemNode = list.NewListViewItem("item");
-                if (!itemNode.IsInitHandlerCalled)
-                {
-                    itemNode.UserObjectData = new UserHistoryItem()
-                    {
-                        btn = itemNode.transform.GetComponent<Button>(),
-                        text = itemNode.transform.Find("userid").GetComponent<TextMeshProUGUI>(),
-                    };
-                    itemNode.IsInitHandlerCalled = true;
-                }
-                var item = itemNode.UserObjectData as UserHistoryItem;
-                return itemNode;
-            });
+            registerBtn = GetButton("Panel/register");
+
+            requestTokenBtn = GetButton("Panel/token/requesttoken");
         }
         protected override void OnOpen(object userData)
         {
@@ -76,19 +45,22 @@ namespace Dawn.Game.UI
             {
                 login();
             });
-            OnClick(switchBtn, () =>
+            OnClick(registerBtn, () =>
             {
-                switchPanel.gameObject.SetActive(true);
+                GameEntry.UI.OpenUI("Register");
             });
 
-            OnClick(closeSwitchBtn, () =>
+            OnClick(requestTokenBtn, () =>
             {
-                switchPanel.gameObject.SetActive(false);
-            });
-            historyList.SetListItemCount(0);
+                var url = string.Format("{0}/user/user_register?operationID={1}", Setting.Instance.GetTokenURL, "register");
+                var userTokenReq = new UserTokenReq()
+                {
 
-            // 自动登录
-            // login();
+                };
+                var json = JsonUtility.ToJson(userTokenReq);
+                GameEntry.WebRequest.AddWebRequest(url, Encoding.UTF8.GetBytes(json));
+            });
+
         }
 
         protected override void OnClose(bool isShutdown, object userData)
@@ -100,12 +72,12 @@ namespace Dawn.Game.UI
         {
             if (userId.text == "")
             {
-                UIExtension.ShowTip("UserId is Empty");
+                GameEntry.UI.Tip("UserId is Empty");
                 return;
             }
             if (token.text == "")
             {
-                UIExtension.ShowTip("Token is Empty");
+                GameEntry.UI.Tip("Token is Empty");
                 return;
             }
             Player.Instance.Login(userId.text, token.text);

@@ -478,7 +478,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67ac2c480083dd04eb51c79ad590e543, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SpriteAltasList: []
+  SpriteAltasList:
+  - Assets/BundleResources/UI/SpriteAtlas/common.spriteatlas
+  - Assets/BundleResources/UI/SpriteAtlas/headicon.spriteatlas
 --- !u!1 &1267825396
 GameObject:
   m_ObjectHideFlags: 0

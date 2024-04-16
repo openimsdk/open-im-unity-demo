@@ -24,8 +24,6 @@ namespace Dawn.Game.UI
         Button audioChatBtn;
         RectTransform addTrans;
         Button addBtn;
-        LocalFriend localFriend;
-        PublicUser publicUser;
         protected override void OnInit(object userData)
         {
             base.OnInit(userData);
@@ -44,17 +42,7 @@ namespace Dawn.Game.UI
         protected override void OnOpen(object userData)
         {
             base.OnOpen(userData);
-            string userId = "";
-            if (userData is LocalFriend)
-            {
-                localFriend = userData as LocalFriend;
-                userId = localFriend.FriendUserID;
-            }
-            else if (userData is PublicUser)
-            {
-                publicUser = userData as PublicUser;
-                userId = publicUser.UserID;
-            }
+            string userId = userData as string;
             userName.text = userId;
             OnClick(backBtn, () =>
             {
@@ -81,7 +69,7 @@ namespace Dawn.Game.UI
                                 {
                                     Debug.LogError(err + ":" + errMsg);
                                 }
-                            }, (int)ConversationType.Single, localFriend.FriendUserID);
+                            }, (int)ConversationType.Single, userId);
                         });
                     }
                     else
@@ -102,8 +90,8 @@ namespace Dawn.Game.UI
                                 }
                             }, new ApplyToAddFriendReq()
                             {
-                                FromUserID = Player.Instance.UserId,
-                                ToUserID = publicUser.UserID,
+                                FromUserID = IMSDK.GetLoginUser(),
+                                ToUserID = userId,
                                 ReqMsg = reqMsg.text,
                                 Ex = "",
                             });

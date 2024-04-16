@@ -55,10 +55,10 @@ namespace Dawn.Game.UI
                 }
                 FriendItem item = itemNode.UserObjectData as FriendItem;
                 var info = userInfos[index];
-                item.Name.text = info.FriendInfo.FriendUserID;
+                item.Name.text = info.FriendInfo.Nickname;
                 OnClick(item.Btn, () =>
                 {
-                    GameEntry.UI.OpenUI("UserInfo", info.FriendInfo);
+                    GameEntry.UI.OpenUI("UserInfo", info.FriendInfo.FriendUserID);
                 });
                 return itemNode;
             });

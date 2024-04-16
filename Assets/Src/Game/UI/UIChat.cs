@@ -42,7 +42,7 @@ namespace Dawn.Game.UI
                 }
                 LoopListViewItem2 itemNode = null;
                 var info = msgList[index];
-                bool isSelf = info.SendID == Player.Instance.UserId;
+                bool isSelf = info.SendID == IMSDK.GetLoginUser();
                 if (isSelf)
                 {
                     itemNode = list.NewListViewItem("self");
@@ -53,10 +53,11 @@ namespace Dawn.Game.UI
                 }
                 if (!itemNode.IsInitHandlerCalled)
                 {
+                    var parent = itemNode.transform as RectTransform;
                     itemNode.UserObjectData = new ChatItem()
                     {
-                        Icon = itemNode.transform.Find("icon").GetComponent<Image>(),
-                        Message = itemNode.transform.Find("msg/txt").GetComponent<TextMeshProUGUI>(),
+                        Icon = GetImage("icon", parent),
+                        Message = GetTextPro("msg/txt", parent),
                     };
                     itemNode.IsInitHandlerCalled = true;
                 }
@@ -91,7 +92,7 @@ namespace Dawn.Game.UI
             });
             OnClick(chatInfoBtn, () =>
             {
-                GameEntry.UI.OpenUI("ChatInfo", conversation.UserID);
+                GameEntry.UI.OpenUI("ChatInfo", conversation);
             });
             RefreshList(chatList, msgList.Count);
 
