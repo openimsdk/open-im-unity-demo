@@ -64,7 +64,7 @@ namespace Dawn.Game.UI
                 if (localUser != null)
                 {
                     ownerName.text = localUser.Nickname;
-                    ownerIcon.sprite = GameEntry.SpriteAltas.GetSprite("headicon", localUser.FaceURL);
+                    SetImage(ownerIcon, localUser.FaceURL);
                 }
                 else
                 {

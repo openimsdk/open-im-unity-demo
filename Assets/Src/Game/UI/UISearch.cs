@@ -82,7 +82,7 @@ namespace Dawn.Game.UI
                     }
                     else
                     {
-                        Debug.LogError(errCode + ":" + errMsg);
+                        GameEntry.UI.Tip(errMsg);
                     }
                     if (searchResultListInfo != null && searchResultListInfo.Count > 0)
                     {

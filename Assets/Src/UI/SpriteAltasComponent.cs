@@ -74,7 +74,7 @@ namespace Dawn
             return null;
         }
 
-        public void SetSprite(Image image, string url)
+        public void SetImageSprite(Image image, string url)
         {
             if (string.IsNullOrEmpty(url))
             {

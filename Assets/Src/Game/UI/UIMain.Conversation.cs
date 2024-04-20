@@ -5,21 +5,25 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
-
+using Dawn.Game.Event;
+using GameFramework.Event;
 
 namespace Dawn.Game.UI
 {
-    public class ConversationItem
-    {
-        public Button Btn;
-        public Image Icon;
-        public TextMeshProUGUI Name;
-        public TextMeshProUGUI Time;
-        public TextMeshProUGUI Msg;
-    }
 
     public partial class UIMain
     {
+        class ConversationItem
+        {
+            public RectTransform Rect;
+            public Image Icon;
+            public TextMeshProUGUI Name;
+            public TextMeshProUGUI Time;
+            public TextMeshProUGUI Msg;
+            public SwipeButton SwipeBtn;
+            public Button PinBtn;
+            public Button DeleteBtn;
+        }
         RectTransform conversationRoot;
         LoopListView2 conversationList;
         List<LocalConversation> localConversations;
@@ -43,11 +47,14 @@ namespace Dawn.Game.UI
                     var parent = itemNode.transform as RectTransform;
                     itemNode.UserObjectData = new ConversationItem()
                     {
-                        Btn = GetButton("", parent),
+                        Rect = parent,
                         Icon = GetImage("icon", parent),
                         Name = GetTextPro("name", parent),
                         Time = GetTextPro("time", parent),
-                        Msg = GetTextPro("msg", parent)
+                        Msg = GetTextPro("msg", parent),
+                        SwipeBtn = GetControl(typeof(SwipeButton), "", parent) as SwipeButton,
+                        PinBtn = GetButton("menu/pin", parent),
+                        DeleteBtn = GetButton("menu/delete", parent),
                     };
                     itemNode.IsInitHandlerCalled = true;
                 }
@@ -59,6 +66,17 @@ namespace Dawn.Game.UI
         void OpenConversation()
         {
             conversationList.SetListItemCount(0);
+            RefreshConversationList();
+
+            GameEntry.Event.Subscribe(OnConversationChange.EventId, HandleConversationChange);
+        }
+        void CloseConversation()
+        {
+            GameEntry.Event.Unsubscribe(OnConversationChange.EventId, HandleConversationChange);
+        }
+
+        void RefreshConversationList()
+        {
             IMSDK.GetAllConversationList((list, err, errMsg) =>
             {
                 if (list != null)
@@ -71,16 +89,12 @@ namespace Dawn.Game.UI
                     Debug.LogError(errMsg);
                 }
             });
-
-        }
-        void CloseConversation()
-        {
-
         }
 
         void SetConversationItemInfo(ConversationItem item, LocalConversation conversation)
         {
             item.Name.text = conversation.ShowName;
+            SetImage(item.Icon, conversation.FaceURL);
             DateTimeOffset dateTimeOffset = DateTimeOffset.FromUnixTimeMilliseconds(conversation.LatestMsgSendTime);
             DateTime localDateTime = dateTimeOffset.LocalDateTime;
             item.Time.text = localDateTime.ToShortTimeString();
@@ -99,10 +113,49 @@ namespace Dawn.Game.UI
             {
                 item.Msg.text = "";
             }
-            OnClick(item.Btn, () =>
+            item.SwipeBtn.OnSwipe.RemoveAllListeners();
+            item.SwipeBtn.OnSwipe.AddListener((dx, dy) =>
+            {
+                var pos = item.Rect.anchoredPosition;
+                pos.x += dx;
+                pos.x = Mathf.Clamp(pos.x, -300, 0);
+                item.Rect.anchoredPosition = pos;
+            });
+            item.SwipeBtn.OnClick.RemoveAllListeners();
+            item.SwipeBtn.OnClick.AddListener(() =>
             {
                 GameEntry.UI.OpenUI("Chat", conversation);
             });
+            OnClick(item.PinBtn, () =>
+            {
+                GameEntry.UI.Tip("TODO");
+            });
+            OnClick(item.DeleteBtn, () =>
+            {
+                IMSDK.DeleteConversationAndDeleteAllMsg((suc, err, errMsg) =>
+                {
+                    if (suc)
+                    {
+                        RefreshConversationList();
+                    }
+                    else
+                    {
+                        GameEntry.UI.Tip(errMsg);
+                    }
+                }, conversation.ConversationID);
+            });
+        }
+        void HandleConversationChange(object sender, GameEventArgs e)
+        {
+            var args = e as OnConversationChange;
+            if (args.SyncServerStatus == SyncServerStatus.Finish)
+            {
+                RefreshConversationList();
+            }
+            if (args.Conversation != null)
+            {
+                RefreshConversationList();
+            }
         }
     }
 }

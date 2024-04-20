@@ -1,15 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
 using UnityEngine.UI;
 using SuperScrollView;
-using UnityGameFramework.Runtime;
 using UnityEngine.U2D;
-using System.Threading;
+
 namespace Dawn.Game.UI
 {
-    public delegate void OnSelectHeadIcon(Sprite sprite);
+    public delegate void OnSelectHeadIcon(string url);
     public class UISelectIcon : UGuiForm
     {
         class Item
@@ -50,7 +48,8 @@ namespace Dawn.Game.UI
                 {
                     if (onSelectHeadIcon != null)
                     {
-                        onSelectHeadIcon(headSprites[index]);
+                        string url = "headicon/" + headSprites[index].name;
+                        onSelectHeadIcon(url);
                     }
                     CloseSelf();
                 });

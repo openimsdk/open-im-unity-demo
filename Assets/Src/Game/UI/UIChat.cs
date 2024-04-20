@@ -4,11 +4,18 @@ using TMPro;
 using UnityEngine.UI;
 using SuperScrollView;
 using open_im_sdk;
+using Dawn.Game.Event;
+using GameFramework.Event;
 
 namespace Dawn.Game.UI
 {
     public class UIChat : UGuiForm
     {
+        public class ChatItem
+        {
+            public Image Icon;
+            public TextMeshProUGUI Message;
+        }
         Button backBtn;
         Button chatInfoBtn;
         TextMeshProUGUI userName;
@@ -17,6 +24,7 @@ namespace Dawn.Game.UI
         Button sendBtn;
         List<MsgStruct> msgList;
         LocalConversation conversation;
+        LocalUser selfUserInfo;
         protected override void OnInit(object userData)
         {
             base.OnInit(userData);
@@ -62,6 +70,17 @@ namespace Dawn.Game.UI
                     itemNode.IsInitHandlerCalled = true;
                 }
                 ChatItem item = itemNode.UserObjectData as ChatItem;
+                if (isSelf)
+                {
+                    if (selfUserInfo != null)
+                    {
+                        SetImage(item.Icon, selfUserInfo.FaceURL);
+                    }
+                }
+                else
+                {
+                    SetImage(item.Icon, info.SenderFaceURL);
+                }
                 if (info.TextElem != null)
                 {
                     item.Message.text = info.TextElem.Content;
@@ -73,11 +92,7 @@ namespace Dawn.Game.UI
         protected override void OnOpen(object userData)
         {
             base.OnOpen(userData);
-
             conversation = userData as LocalConversation;
-
-            userName.text = conversation.UserID;
-
             inputMsg.onSubmit.AddListener((value) =>
             {
                 TrySendTextMsg();
@@ -94,10 +109,37 @@ namespace Dawn.Game.UI
             {
                 GameEntry.UI.OpenUI("ChatInfo", conversation);
             });
-            RefreshList(chatList, msgList.Count);
+            RefreshUI();
+            GameEntry.Event.Subscribe(OnCreateGroup.EventId, HandleCreateGroup);
+        }
 
+        protected override void OnClose(bool isShutdown, object userData)
+        {
+            base.OnClose(isShutdown, userData);
+            msgList.Clear();
+            selfUserInfo = null;
+            GameEntry.Event.Unsubscribe(OnCreateGroup.EventId, HandleCreateGroup);
+        }
+
+        void RefreshUI()
+        {
+            IMSDK.GetSelfUserInfo((userInfo, err, errMsg) =>
+            {
+                if (userInfo != null)
+                {
+                    selfUserInfo = userInfo;
+                    RefreshList(chatList, msgList.Count);
+                }
+                else
+                {
+                    Debug.Log(errMsg);
+                }
+            });
+            msgList.Clear();
+            RefreshList(chatList, 0);
             if (conversation != null)
             {
+                userName.text = conversation.ShowName;
                 IMSDK.GetAdvancedHistoryMessageList((list, err, msg) =>
                 {
                     if (list != null)
@@ -116,16 +158,7 @@ namespace Dawn.Game.UI
                     Count = 10,
                 });
             }
-
-            inputMsg.ActivateInputField();
         }
-
-        protected override void OnClose(bool isShutdown, object userData)
-        {
-            base.OnClose(isShutdown, userData);
-            msgList.Clear();
-        }
-
 
         void TrySendTextMsg()
         {
@@ -150,7 +183,16 @@ namespace Dawn.Game.UI
             {
             });
             inputMsg.text = "";
-            inputMsg.ActivateInputField();
+        }
+
+        void HandleCreateGroup(object sender, GameEventArgs e)
+        {
+            var args = e as OnCreateGroup;
+            if (args.OldConversation != null && args.NewConversation != null && args.OldConversation.ConversationID == conversation.ConversationID)
+            {
+                conversation = args.NewConversation;
+                RefreshUI();
+            }
         }
     }
 }

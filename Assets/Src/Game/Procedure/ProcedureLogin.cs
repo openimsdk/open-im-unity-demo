@@ -3,6 +3,7 @@ using GameFramework.Procedure;
 using Dawn.Game.Event;
 using GameFramework.Event;
 using open_im_sdk;
+using UnityEngine;
 namespace Dawn.Game
 {
     public class ProcedureLogin : ProcedureBase
@@ -18,6 +19,9 @@ namespace Dawn.Game
         protected override void OnEnter(IFsm<IProcedureManager> procedureOwner)
         {
             base.OnEnter(procedureOwner);
+            GameEntry.Event.Subscribe(OnLoginStatusChange.EventId, HandlerLoginStatusChange);
+            GameEntry.Event.Subscribe(OnConnStatusChange.EventId, HandleConnStatusChange);
+
             UILoginId = -1;
             if (IMSDK.GetLoginStatus() == LoginStatus.Logged)
             {
@@ -26,7 +30,6 @@ namespace Dawn.Game
             else
             {
                 UILoginId = GameEntry.UI.OpenUI("Login");
-                GameEntry.Event.Subscribe(OnLoginStatusChange.EventId, HandlerLoginStatusChange);
             }
         }
 
@@ -35,18 +38,19 @@ namespace Dawn.Game
             OnLoginStatusChange args = eventArgs as OnLoginStatusChange;
             if (args.UserStatus == UserStatus.LoginSuc)
             {
-                ChangeState<ProcedureMain>(procedureOwner);
             }
         }
 
         protected override void OnLeave(IFsm<IProcedureManager> procedureOwner, bool isShutdown)
         {
             base.OnLeave(procedureOwner, isShutdown);
+            GameEntry.Event.Unsubscribe(OnLoginStatusChange.EventId, HandlerLoginStatusChange);
+            GameEntry.Event.Unsubscribe(OnConnStatusChange.EventId, HandleConnStatusChange);
             if (UILoginId > 0)
             {
                 GameEntry.UI.CloseUIForm(UILoginId);
-                GameEntry.Event.Unsubscribe(OnLoginStatusChange.EventId, HandlerLoginStatusChange);
             }
+
         }
         protected override void OnUpdate(IFsm<IProcedureManager> procedureOwner, float elapseSeconds, float realElapseSeconds)
         {
@@ -55,6 +59,27 @@ namespace Dawn.Game
         protected override void OnDestroy(IFsm<IProcedureManager> procedureOwner)
         {
             base.OnDestroy(procedureOwner);
+        }
+
+        void HandleConnStatusChange(object sender, GameEventArgs e)
+        {
+            var args = e as OnConnStatusChange;
+            if (args.ConnStatus == ConnStatus.KickOffline)
+            {
+                GameEntry.UI.Tip("KickOffline");
+            }
+            else if (args.ConnStatus == ConnStatus.ConnFailed)
+            {
+                GameEntry.UI.Tip("ConnFailed");
+            }
+            else if (args.ConnStatus == ConnStatus.TokenExpired)
+            {
+                GameEntry.UI.Tip("TokenExpired");
+            }
+            else if (args.ConnStatus == ConnStatus.ConnSuc)
+            {
+                ChangeState<ProcedureMain>(procedureOwner);
+            }
         }
     }
 }

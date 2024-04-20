@@ -18,8 +18,7 @@ namespace Dawn.Game.UI
         TMP_InputField dataDir;
         TMP_InputField logDir;
         TMP_InputField logLevel;
-        TMP_InputField registerUserUrl;
-        TMP_InputField getTokenUrl;
+        TMP_InputField httpUrl;
         Button saveBtn;
         protected override void OnInit(object userData)
         {
@@ -30,8 +29,7 @@ namespace Dawn.Game.UI
             dataDir = GetInputField("Panel/content/datadir/input");
             logDir = GetInputField("Panel/content/logdir/input");
             logLevel = GetInputField("Panel/content/loglevel/input");
-            registerUserUrl = GetInputField("Panel/content/registeruserurl/input");
-            getTokenUrl = GetInputField("Panel/content/gettokenurl/input");
+            httpUrl = GetInputField("Panel/content/httpurl/input");
             saveBtn = GetButton("Panel/save");
         }
         protected override void OnOpen(object userData)
@@ -47,8 +45,7 @@ namespace Dawn.Game.UI
             dataDir.text = setting.DataDir;
             logDir.text = setting.LogDir;
             logLevel.text = setting.LogLevel.ToString();
-            registerUserUrl.text = setting.RegisterUserURL;
-            getTokenUrl.text = setting.GetTokenURL;
+            httpUrl.text = setting.HttpURL;
 
             OnClick(saveBtn, () =>
             {
@@ -57,8 +54,7 @@ namespace Dawn.Game.UI
                 setting.DataDir = dataDir.text;
                 setting.LogDir = logDir.text;
                 setting.LogLevel = uint.Parse(logLevel.text);
-                setting.RegisterUserURL = registerUserUrl.text;
-                setting.GetTokenURL = getTokenUrl.text;
+                setting.HttpURL = httpUrl.text;
                 setting.Save();
             });
             OnClick(backBtn, () =>

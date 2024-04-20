@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 using TMPro;
 using UnityEngine.UI;
 using SuperScrollView;
@@ -9,6 +10,7 @@ using Dawn.Game.Event;
 using System;
 using open_im_sdk;
 using System.Text;
+using GameFramework.Event;
 
 namespace Dawn.Game.UI
 {
@@ -52,20 +54,16 @@ namespace Dawn.Game.UI
 
             OnClick(requestTokenBtn, () =>
             {
-                var url = string.Format("{0}/user/user_register?operationID={1}", Setting.Instance.GetTokenURL, "register");
-                var userTokenReq = new UserTokenReq()
-                {
-
-                };
-                var json = JsonUtility.ToJson(userTokenReq);
-                GameEntry.WebRequest.AddWebRequest(url, Encoding.UTF8.GetBytes(json));
+                StartCoroutine(RefreshToken());
             });
 
+            GameEntry.Event.Subscribe(OnRegisterUser.EventId, HandleRegisterUser);
         }
 
         protected override void OnClose(bool isShutdown, object userData)
         {
             base.OnClose(isShutdown, userData);
+            GameEntry.Event.Unsubscribe(OnRegisterUser.EventId, HandleRegisterUser);
         }
 
         void login()
@@ -81,6 +79,56 @@ namespace Dawn.Game.UI
                 return;
             }
             Player.Instance.Login(userId.text, token.text);
+        }
+
+        void HandleRegisterUser(object sender, GameEventArgs e)
+        {
+            var args = e as OnRegisterUser;
+            userId.text = args.UserID;
+            StartCoroutine(RefreshToken());
+        }
+
+        IEnumerator RefreshToken()
+        {
+            var url = string.Format("{0}{1}", Setting.Instance.HttpURL, "/auth/user_token");
+            Debug.Log(url);
+            var userTokenReq = new UserTokenReq()
+            {
+                secret = "openIM123",
+                platformID = (int)Player.PlatformID,
+                userID = userId.text,
+            };
+            var bodyData = Encoding.UTF8.GetBytes(JsonUtility.ToJson(userTokenReq));
+            UnityWebRequest www = new UnityWebRequest(url, UnityWebRequest.kHttpVerbPOST);
+            DownloadHandler downloadHandler = new DownloadHandlerBuffer();
+            www.downloadHandler = downloadHandler;
+            www.SetRequestHeader("Content-Type", "application/json;charset=utf-8");
+            www.SetRequestHeader("operationID", "111111");
+            www.uploadHandler = new UploadHandlerRaw(bodyData);
+            yield return www.SendWebRequest();
+            if (www.result == UnityWebRequest.Result.Success)
+            {
+                var data = www.downloadHandler.text;
+                Debug.Log(data);
+                var res = JsonUtility.FromJson<UserTokenRes>(data);
+                if (res.errCode > 0)
+                {
+                    GameEntry.UI.Tip(res.errMsg + ":" + res.errDlt);
+                }
+                else
+                {
+                    var userToken = res.data;
+                    token.text = userToken.token;
+                }
+            }
+            else
+            {
+                var err = $"HTTP request failed with status code {www.responseCode}: {www.error}";
+                GameEntry.UI.Tip(err);
+            }
+            www.downloadHandler.Dispose();
+            www.uploadHandler.Dispose();
+            www.Dispose();
         }
     }
 }

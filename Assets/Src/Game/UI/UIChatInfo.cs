@@ -4,6 +4,9 @@ using TMPro;
 using UnityEngine.UI;
 using SuperScrollView;
 using open_im_sdk;
+using Dawn.Game.Event;
+using GameFramework.Event;
+using System;
 
 namespace Dawn.Game.UI
 {
@@ -20,14 +23,18 @@ namespace Dawn.Game.UI
         LoopGridView memberList;
         RectTransform groupNameRect;
         Button groupNameBtn;
-        TextMeshProUGUI groutName;
+        TextMeshProUGUI groupName;
         Button searchHistory;
         Button clearChat;
         RectTransform groupExitRect;
         Button groupExitBtn;
-
+        // 在创建群组时会用到
         LocalConversation conversation;
+        LocalConversation createdConversation;
         List<LocalGroupMember> membersInfo;
+
+        LocalGroup localGroup;
+
         protected override void OnInit(object userData)
         {
             base.OnInit(userData);
@@ -35,7 +42,7 @@ namespace Dawn.Game.UI
             memberList = GetGridView("Panel/content/center/members/list");
             groupNameRect = GetRectTransform("Panel/content/center/groupname");
             groupNameBtn = GetButton("Panel/content/center/groupname/btn");
-            groutName = GetTextPro("Panel/content/center/groupname/name");
+            groupName = GetTextPro("Panel/content/center/groupname/name");
             searchHistory = GetButton("Panel/content/center/searchhistory/btn");
             clearChat = GetButton("Panel/content/center/clearchat/btn");
             groupExitRect = GetRectTransform("Panel/content/center/groupexit");
@@ -45,7 +52,7 @@ namespace Dawn.Game.UI
             {
                 if (index < 0) return null;
                 bool isAdd = index == membersInfo.Count;
-                var itemNode = list.NewListViewItem("item");
+                var itemNode = isAdd ? list.NewListViewItem("add") : list.NewListViewItem("item");
                 if (!itemNode.IsInitHandlerCalled)
                 {
                     var parent = itemNode.transform as RectTransform;
@@ -60,15 +67,17 @@ namespace Dawn.Game.UI
                 MemeberItem item = itemNode.UserObjectData as MemeberItem;
                 if (isAdd)
                 {
-                    item.Name.text = "添加";
+                    item.Name.text = "";
                     OnClick(item.Btn, () =>
                     {
-                        // TODO
+                        GameEntry.UI.OpenUI("SelectMember", (OnSelectMember)OnSelectMember);
                     });
                 }
                 else
                 {
                     var info = membersInfo[index];
+                    SetImage(item.Icon, info.FaceURL);
+                    item.Name.text = info.Nickname;
                     if (conversation.ConversationType == (int)ConversationType.Single)
                     {
 
@@ -79,7 +88,7 @@ namespace Dawn.Game.UI
                     }
                     OnClick(item.Btn, () =>
                     {
-                        // GameEntry.UI.OpenUI("UserInfo",) // userid
+                        GameEntry.UI.OpenUI("UserInfo", info.UserID);
                     });
                 }
                 return itemNode;
@@ -95,6 +104,18 @@ namespace Dawn.Game.UI
             });
             OnClick(searchHistory, () => { });
             OnClick(clearChat, () => { });
+
+            RefreshUI();
+
+            GameEntry.Event.Subscribe(OnConversationChange.EventId, HandleConversationChange);
+        }
+        protected override void OnClose(bool isShutdown, object userData)
+        {
+            base.OnClose(isShutdown, userData);
+            GameEntry.Event.Unsubscribe(OnConversationChange.EventId, HandleConversationChange);
+        }
+        void RefreshUI()
+        {
             if (conversation.ConversationType == (int)ConversationType.Single)
             {
                 groupNameRect.gameObject.SetActive(false);
@@ -103,7 +124,9 @@ namespace Dawn.Game.UI
                 membersInfo = new List<LocalGroupMember>();
                 membersInfo.Add(new LocalGroupMember()
                 {
-
+                    UserID = conversation.UserID,
+                    Nickname = conversation.ShowName,
+                    FaceURL = conversation.FaceURL,
                 });
                 RefreshGrid(memberList, membersInfo.Count + 1);
             }
@@ -112,7 +135,34 @@ namespace Dawn.Game.UI
                 groupNameRect.gameObject.SetActive(true);
                 groupExitRect.gameObject.SetActive(true);
 
-                groutName.text = conversation.GroupID;
+                IMSDK.GetSpecifiedGroupsInfo((list, err, errMsg) =>
+                {
+                    if (list != null)
+                    {
+                        if (list.Count >= 1)
+                        {
+                            localGroup = list[0];
+                            groupName.text = localGroup.GroupName;
+
+                        }
+                    }
+                    else
+                    {
+                        GameEntry.UI.Tip(errMsg);
+                    }
+                }, new string[] { conversation.GroupID });
+                IMSDK.GetGroupMemberList((list, err, errMsg) =>
+                {
+                    if (list != null)
+                    {
+                        membersInfo = list;
+                        RefreshGrid(memberList, membersInfo.Count + 1);
+                    }
+                    else
+                    {
+                        GameEntry.UI.Tip(errMsg);
+                    }
+                }, conversation.GroupID, 0, 0, 0);
                 OnClick(groupNameBtn, () =>
                 {
                     // TODO
@@ -123,31 +173,78 @@ namespace Dawn.Game.UI
                     {
                         if (suc)
                         {
-
+                            GameEntry.UI.Tip("Quit Group Success");
                         }
                         else
                         {
-                            Debug.LogError(errMsg);
+                            GameEntry.UI.Tip(errMsg);
                         }
                     }, conversation.GroupID);
                 });
-                IMSDK.GetGroupMemberList((list, err, errMsg) =>
+            }
+        }
+
+        void OnSelectMember(string[] memebers)
+        {
+            if (memebers.Length <= 0) return;
+            if (conversation.ConversationType == (int)ConversationType.Single)
+            {
+                IMSDK.CreateGroup((groupInfo, err, errMsg) =>
                 {
-                    if (list != null)
+                    if (groupInfo != null)
                     {
-                        membersInfo = list;
-                        RefreshGrid(memberList, membersInfo.Count + 1);
+                        localGroup = groupInfo;
+                        if (createdConversation != null && createdConversation.GroupID == localGroup.GroupID)
+                        {
+                            var oldConversation = conversation;
+                            conversation = createdConversation;
+                            RefreshUI();
+                            GameEntry.Event.Fire(OnCreateGroup.EventId, new OnCreateGroup()
+                            {
+                                OldConversation = oldConversation,
+                                NewConversation = conversation,
+                                Group = localGroup,
+                            });
+                        }
                     }
                     else
                     {
-                        Debug.LogError(errMsg);
+                        GameEntry.UI.Tip(errMsg);
                     }
-                }, conversation.GroupID, 0, 0, 0);
+                }, new CreateGroupReq()
+                {
+                    // MemberUserIDs = memebers,
+                    AdminUserIDs = memebers,
+                    OwnerUserID = IMSDK.GetLoginUser(),
+                    GroupInfo = new LocalGroup()
+                    {
+                        GroupType = (int)GroupType.Group,
+                    }
+                });
+            }
+            else if (conversation.ConversationType == (int)ConversationType.Group)
+            {
+                IMSDK.InviteUserToGroup((suc, err, errMsg) =>
+                {
+                    if (suc)
+                    {
+                        GameEntry.UI.Tip("Invite User Suc");
+                    }
+                    else
+                    {
+                        GameEntry.UI.Tip(errMsg);
+                    }
+                }, conversation.GroupID, "", memebers);
             }
         }
-        protected override void OnClose(bool isShutdown, object userData)
+
+        void HandleConversationChange(object sender, GameEventArgs e)
         {
-            base.OnClose(isShutdown, userData);
+            var args = e as OnConversationChange;
+            if (args.Created && args.Conversation != null)
+            {
+                createdConversation = args.Conversation;
+            }
         }
     }
 }

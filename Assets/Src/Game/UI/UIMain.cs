@@ -5,6 +5,9 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using TMPro;
 using open_im_sdk;
+using Dawn.Game.Event;
+using GameFramework;
+using GameFramework.Event;
 
 namespace Dawn.Game.UI
 {
@@ -68,7 +71,7 @@ namespace Dawn.Game.UI
             });
             OnClick(topAddBtn, () =>
             {
-                
+
             });
             OnClick(topSearchBtn, () =>
             {

@@ -16,6 +16,7 @@ namespace Dawn.Game.UI
         Image headIcon;
         Button saveBtn;
         LocalUser localUser;
+        string headIconURL = "";
         protected override void OnInit(object userData)
         {
             base.OnInit(userData);
@@ -41,14 +42,7 @@ namespace Dawn.Game.UI
                 {
                     userId.text = localUser.UserID;
                     nickName.text = localUser.Nickname;
-                    if (localUser.FaceURL != "")
-                    {
-                        headIcon.sprite = GameEntry.SpriteAltas.GetSprite("headicon", localUser.FaceURL);
-                    }
-                    else
-                    {
-                        headIcon.sprite = null;
-                    }
+                    SetImage(headIcon, localUser.FaceURL);
                 }
                 else
                 {
@@ -86,14 +80,15 @@ namespace Dawn.Game.UI
                     {
                         UserID = localUser.UserID,
                         Nickname = nickName.text,
-                        FaceURL = headIcon.sprite != null ? headIcon.sprite.name : "",
+                        FaceURL = headIconURL,
                     });
                 }
             });
         }
-        public void OnSelectHeadIcon(Sprite sprite)
+        public void OnSelectHeadIcon(string url)
         {
-            headIcon.sprite = sprite;
+            headIconURL = url;
+            SetImage(headIcon, url);
         }
 
         protected override void OnClose(bool isShutdown, object userData)

@@ -267,6 +267,14 @@ namespace Dawn
             }
         }
 
+        public void SetImage(Image image, string sprite)
+        {
+            if (image != null && sprite != "")
+            {
+                GameEntry.SpriteAltas.SetImageSprite(image, sprite);
+            }
+        }
+
         public void CloseSelf()
         {
             GameEntry.UI.CloseUIForm(UIForm.SerialId);

@@ -16,11 +16,6 @@ namespace Dawn.Game.UI
         public Image Icon;
         public TextMeshProUGUI Name;
     }
-    public class ChatItem
-    {
-        public Image Icon;
-        public TextMeshProUGUI Message;
-    }
 
     public partial class UIMain
     {
@@ -56,6 +51,10 @@ namespace Dawn.Game.UI
                 FriendItem item = itemNode.UserObjectData as FriendItem;
                 var info = userInfos[index];
                 item.Name.text = info.FriendInfo.Nickname;
+                if (info.FriendInfo.FaceURL != "")
+                {
+                    SetImage(item.Icon, info.FriendInfo.FaceURL);
+                }
                 OnClick(item.Btn, () =>
                 {
                     GameEntry.UI.OpenUI("UserInfo", info.FriendInfo.FriendUserID);

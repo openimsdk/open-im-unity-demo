@@ -48,57 +48,98 @@ namespace Dawn.Game.UI
             {
                 CloseSelf();
             });
-            IMSDK.CheckFriend((list, err, errMsg) =>
+            userIcon.sprite = null;
+            userName.text = "";
+            if (userId == IMSDK.GetLoginUser())
             {
-                if (list != null && list.Count == 1)
+                IMSDK.GetSelfUserInfo((userInfo, err, errMsg) =>
                 {
-                    if (list[0].Result == 1)
+                    if (userInfo != null)
                     {
-                        friendTrans.gameObject.SetActive(true);
-                        addTrans.gameObject.SetActive(false);
-
-                        OnClick(sendMsgBtn, () =>
-                        {
-                            IMSDK.GetOneConversation((conversation, err, errMsg) =>
-                            {
-                                if (conversation != null)
-                                {
-                                    GameEntry.UI.OpenUI("Chat", conversation);
-                                }
-                                else
-                                {
-                                    Debug.LogError(err + ":" + errMsg);
-                                }
-                            }, (int)ConversationType.Single, userId);
-                        });
+                        SetImage(userIcon, userInfo.FaceURL);
+                        userName.text = userInfo.Nickname;
                     }
                     else
                     {
-                        friendTrans.gameObject.SetActive(false);
-                        addTrans.gameObject.SetActive(true);
-                        OnClick(addBtn, () =>
-                        {
-                            IMSDK.AddFriend((suc, errCode, errMsg) =>
-                            {
-                                if (!suc)
-                                {
-                                    Debug.Log(errCode + ":" + errMsg);
-                                }
-                                else
-                                {
-                                    CloseSelf();
-                                }
-                            }, new ApplyToAddFriendReq()
-                            {
-                                FromUserID = IMSDK.GetLoginUser(),
-                                ToUserID = userId,
-                                ReqMsg = reqMsg.text,
-                                Ex = "",
-                            });
-                        });
+                        GameEntry.UI.Tip(errMsg);
                     }
-                }
-            }, new string[] { userId });
+                });
+                addTrans.gameObject.SetActive(false);
+                friendTrans.gameObject.SetActive(false);
+                addTrans.gameObject.SetActive(false);
+            }
+            else
+            {
+                IMSDK.GetUsersInfo((list, err, errMsg) =>
+                {
+                    if (list != null)
+                    {
+                        if (list.Count >= 1)
+                        {
+                            var userInfo = list[0];
+                            SetImage(userIcon, userInfo.PublicInfo.FaceURL);
+                            userName.text = userInfo.PublicInfo.Nickname;
+                        }
+                    }
+                    else
+                    {
+                        GameEntry.UI.Tip(errMsg);
+                    }
+                }, new string[1] { userId });
+
+                IMSDK.CheckFriend((list, err, errMsg) =>
+                {
+                    if (list != null && list.Count == 1)
+                    {
+                        if (list[0].Result == 1)
+                        {
+                            friendTrans.gameObject.SetActive(true);
+                            addTrans.gameObject.SetActive(false);
+
+                            OnClick(sendMsgBtn, () =>
+                            {
+                                IMSDK.GetOneConversation((conversation, err, errMsg) =>
+                                {
+                                    if (conversation != null)
+                                    {
+                                        GameEntry.UI.OpenUI("Chat", conversation);
+                                    }
+                                    else
+                                    {
+                                        Debug.LogError(err + ":" + errMsg);
+                                    }
+                                }, (int)ConversationType.Single, userId);
+                            });
+                        }
+                        else
+                        {
+                            friendTrans.gameObject.SetActive(false);
+                            addTrans.gameObject.SetActive(true);
+                            OnClick(addBtn, () =>
+                            {
+                                IMSDK.AddFriend((suc, errCode, errMsg) =>
+                                {
+                                    if (!suc)
+                                    {
+                                        Debug.Log(errCode + ":" + errMsg);
+                                    }
+                                    else
+                                    {
+                                        CloseSelf();
+                                    }
+                                }, new ApplyToAddFriendReq()
+                                {
+                                    FromUserID = IMSDK.GetLoginUser(),
+                                    ToUserID = userId,
+                                    ReqMsg = reqMsg.text,
+                                    Ex = "",
+                                });
+                            });
+                        }
+                    }
+                }, new string[] { userId });
+            }
+
         }
 
         protected override void OnClose(bool isShutdown, object userData)

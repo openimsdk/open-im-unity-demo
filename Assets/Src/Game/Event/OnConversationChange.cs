@@ -5,6 +5,11 @@ using open_im_sdk;
 using UnityGameFramework.Runtime;
 namespace Dawn.Game.Event
 {
+    public enum SyncServerStatus
+    {
+        Empty, Start, Failed, Finish
+    }
+
     public class OnConversationChange : GameEventArgs
     {
         public static readonly int EventId = typeof(OnConversationChange).GetHashCode();
@@ -15,13 +20,14 @@ namespace Dawn.Game.Event
                 return EventId;
             }
         }
-
-        public List<LocalFriend> List;
-
-
+        public bool Created;
+        public LocalConversation Conversation;
+        public SyncServerStatus SyncServerStatus = SyncServerStatus.Empty;
         public override void Clear()
         {
-            List.Clear();
+            Conversation = null;
+            SyncServerStatus = SyncServerStatus.Empty;
+            Created = false;
         }
     }
 }
