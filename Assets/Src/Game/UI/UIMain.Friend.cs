@@ -20,7 +20,7 @@ namespace Dawn.Game.UI
     public partial class UIMain
     {
         RectTransform friendRoot;
-
+        Button groupBtn;
         Button newFriendBtn;
         LoopListView2 friendList;
 
@@ -28,8 +28,10 @@ namespace Dawn.Game.UI
         void InitFriend()
         {
             friendRoot = GetRectTransform("Panel/content/center/friend");
+            groupBtn = GetButton("Panel/content/center/friend/group");
             newFriendBtn = GetButton("Panel/content/center/friend/newfriend");
             friendList = GetListView("Panel/content/center/friend/list");
+
             friendList.InitListView(0, (list, index) =>
             {
                 if (index < 0)
@@ -65,11 +67,20 @@ namespace Dawn.Game.UI
 
         void OpenFriend()
         {
+            OnClick(groupBtn, () =>
+            {
+                GameEntry.UI.OpenUI("GroupList", this);
+            });
             OnClick(newFriendBtn, () =>
             {
                 GameEntry.UI.OpenUI("NewFriend", this);
             });
+            RefreshFriendList();
+            GameEntry.Event.Subscribe(OnFriendChange.EventId, HandleFriendChange);
+        }
 
+        void RefreshFriendList()
+        {
             IMSDK.GetFriendList((list, err, errMsg) =>
             {
                 if (list != null)
@@ -83,9 +94,18 @@ namespace Dawn.Game.UI
                 }
             });
         }
-
         void CloseFriend()
         {
+            GameEntry.Event.Unsubscribe(OnFriendChange.EventId, HandleFriendChange);
+        }
+
+        void HandleFriendChange(object sender, GameEventArgs e)
+        {
+            OnFriendChange args = e as OnFriendChange;
+            if (args.Operation == FriendOperation.Added || args.Operation == FriendOperation.Deleted || args.Operation == FriendOperation.InfoChanged)
+            {
+                RefreshFriendList();
+            }
         }
     }
 }

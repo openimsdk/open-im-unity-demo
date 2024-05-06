@@ -247,8 +247,14 @@ namespace Dawn
 
         public void RefreshList(LoopListView2 list, int count, bool resetPos = false)
         {
-            list.SetListItemCount(count);
-            list.RefreshAllShownItem();
+            if (list.ItemTotalCount != count)
+            {
+                list.SetListItemCount(count);
+            }
+            else
+            {
+                list.RefreshAllShownItem();
+            }
             if (resetPos)
             {
                 list.MovePanelToItemIndex(0, 0);
@@ -260,7 +266,10 @@ namespace Dawn
             {
                 grid.SetListItemCount(count);
             }
-            grid.RefreshAllShownItem();
+            else
+            {
+                grid.RefreshAllShownItem();
+            }
             if (resetPos)
             {
                 grid.MovePanelToItemByIndex(0);

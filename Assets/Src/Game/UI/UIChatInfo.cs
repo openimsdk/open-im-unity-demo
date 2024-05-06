@@ -102,8 +102,30 @@ namespace Dawn.Game.UI
             {
                 CloseSelf();
             });
-            OnClick(searchHistory, () => { });
-            OnClick(clearChat, () => { });
+            OnClick(searchHistory, () =>
+            {
+                GameEntry.UI.Tip("TODO");
+            });
+            OnClick(clearChat, () =>
+            {
+                IMSDK.ClearConversationAndDeleteAllMsg((suc, err, errMsg) =>
+                {
+                    if (suc)
+                    {
+                        GameEntry.UI.Tip("删除成功");
+                        GameEntry.Event.Fire(OnConversationChange.EventId, new OnConversationChange
+                        {
+                            Conversation = conversation,
+                            ClearHistory = true,
+                        });
+                        CloseSelf();
+                    }
+                    else
+                    {
+                        GameEntry.UI.Tip(errMsg);
+                    }
+                }, conversation.ConversationID);
+            });
 
             RefreshUI();
 
@@ -184,11 +206,19 @@ namespace Dawn.Game.UI
             }
         }
 
-        void OnSelectMember(string[] memebers)
+        void OnSelectMember(FullUserInfo[] selectUsers)
         {
-            if (memebers.Length <= 0) return;
+            if (selectUsers.Length <= 0) return;
+            var name = "";
+            var members = new string[selectUsers.Length];
+            for (int i = 0; i < selectUsers.Length; i++)
+            {
+                name = name + selectUsers[i].FriendInfo.Nickname;
+                members[i] = selectUsers[i].FriendInfo.FriendUserID;
+            }
             if (conversation.ConversationType == (int)ConversationType.Single)
             {
+
                 IMSDK.CreateGroup((groupInfo, err, errMsg) =>
                 {
                     if (groupInfo != null)
@@ -199,7 +229,7 @@ namespace Dawn.Game.UI
                             var oldConversation = conversation;
                             conversation = createdConversation;
                             RefreshUI();
-                            GameEntry.Event.Fire(OnCreateGroup.EventId, new OnCreateGroup()
+                            GameEntry.Event.Fire(OnGroupChange.EventId, new OnGroupChange()
                             {
                                 OldConversation = oldConversation,
                                 NewConversation = conversation,
@@ -213,12 +243,13 @@ namespace Dawn.Game.UI
                     }
                 }, new CreateGroupReq()
                 {
-                    // MemberUserIDs = memebers,
-                    AdminUserIDs = memebers,
+                    MemberUserIDs = members,
+                    AdminUserIDs = members,
                     OwnerUserID = IMSDK.GetLoginUser(),
                     GroupInfo = new LocalGroup()
                     {
                         GroupType = (int)GroupType.Group,
+                        GroupName = name,
                     }
                 });
             }
@@ -234,7 +265,7 @@ namespace Dawn.Game.UI
                     {
                         GameEntry.UI.Tip(errMsg);
                     }
-                }, conversation.GroupID, "", memebers);
+                }, conversation.GroupID, "", members);
             }
         }
 

@@ -708,7 +708,7 @@ PlayerSettings:
   webGLMemoryGeometricGrowthCap: 96
   webGLPowerPreference: 2
   scriptingDefineSymbols:
-    Android: ENABLE_LOG
+    Android: ENABLE_LOG;IMSDK_LOG_ENABLE
     Standalone: ENABLE_LOG;IMSDK_LOG_ENABLE
     WebGL: ENABLE_LOG
     Windows Store Apps: ENABLE_LOG
@@ -725,7 +725,7 @@ PlayerSettings:
   allowUnsafeCode: 1
   useDeterministicCompilation: 1
   enableRoslynAnalyzers: 1
-  selectedPlatform: 0
+  selectedPlatform: 2
   additionalIl2CppArgs: 
   scriptingRuntimeVersion: 1
   gcIncremental: 1

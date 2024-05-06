@@ -20,7 +20,6 @@ namespace Dawn.Game.UI
     {
         TextMeshProUGUI title;
         Button topSearchBtn;
-        Button topAddBtn;
         Toggle[] toggles;
         NavMenu selectNavMenu = NavMenu.Conversation;
 
@@ -29,7 +28,6 @@ namespace Dawn.Game.UI
             base.OnInit(userData);
             title = GetTextPro("Panel/content/top/title");
             topSearchBtn = GetButton("Panel/content/top/search");
-            topAddBtn = GetButton("Panel/content/top/add");
             toggles = new Toggle[3];
             toggles[(int)NavMenu.Conversation] = GetToggle("Panel/content/bottom/menu/conversaton");
             toggles[(int)NavMenu.Friend] = GetToggle("Panel/content/bottom/menu/friend");
@@ -68,10 +66,6 @@ namespace Dawn.Game.UI
                 {
                     selectNavMenu = NavMenu.Owner;
                 }
-            });
-            OnClick(topAddBtn, () =>
-            {
-
             });
             OnClick(topSearchBtn, () =>
             {

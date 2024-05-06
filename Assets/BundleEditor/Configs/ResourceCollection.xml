@@ -7,12 +7,20 @@
     <Assets>
       <Asset Guid="026c6d68e5a6923479b575aaf3cf4b35" ResourceName="UI" />
       <Asset Guid="0388fef0c7b1491439155500ac19a5ac" ResourceName="UI" />
+      <Asset Guid="07c919a337269074baa327cc4feb1245" ResourceName="UI" />
       <Asset Guid="358a210d93b5770419ff5c1744a81b2c" ResourceName="UI" />
+      <Asset Guid="446863f9daa844f409d1fe4b4b773b2d" ResourceName="UI" />
+      <Asset Guid="567def37ade839648b886827b5cefac9" ResourceName="UI" />
       <Asset Guid="6088ea473e16a94438babf7c2a6ef34c" ResourceName="UI" />
+      <Asset Guid="6a2009e494b69ca4ea6768e63b4c0983" ResourceName="UI" />
+      <Asset Guid="72e74fd854d7fb74f81fd0a5addee5fc" ResourceName="UI" />
       <Asset Guid="84b4c91e7fdbed643bcbb0103192774e" ResourceName="UI" />
+      <Asset Guid="8555900047d40e64db49b1e45b014ff7" ResourceName="UI" />
       <Asset Guid="8951928c91852a042901c4b0dc527fbe" ResourceName="UI" />
+      <Asset Guid="8e1ffc2a086bd354fac2a13525689119" ResourceName="UI" />
       <Asset Guid="8e80f8fa1b4a7a34c9238453c3e1daf0" ResourceName="UI" />
       <Asset Guid="c5494b14ad5620c4e84270f170368aa9" ResourceName="UI" />
+      <Asset Guid="de57a253072916b4cafbbd5f79d4517e" ResourceName="UI" />
       <Asset Guid="fae8758086c040e40b0287720c8aebbe" ResourceName="UI" />
     </Assets>
   </ResourceCollection>

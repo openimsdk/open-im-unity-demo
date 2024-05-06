@@ -5,6 +5,7 @@
 // Feedback: mailto:ellan@gameframework.cn
 //------------------------------------------------------------
 
+using Feif.UI;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityGameFramework.Runtime;
@@ -21,6 +22,8 @@ namespace Dawn
         private int m_Depth = 0;
         private Canvas m_CachedCanvas = null;
 
+        SafeAreaAdapter adapter;
+
         /// <summary>
         /// 设置界面组深度。
         /// </summary>
@@ -36,6 +39,8 @@ namespace Dawn
         {
             m_CachedCanvas = gameObject.GetOrAddComponent<Canvas>();
             gameObject.GetOrAddComponent<GraphicRaycaster>();
+
+            adapter = gameObject.AddComponent<Feif.UI.SafeAreaAdapter>();
         }
 
         private void Start()
@@ -49,6 +54,8 @@ namespace Dawn
             transform.anchoredPosition = Vector2.zero;
             transform.sizeDelta = Vector2.zero;
             transform.localPosition = Vector3.zero;
+
+            adapter.Adapt();
         }
     }
 }

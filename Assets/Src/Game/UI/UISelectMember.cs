@@ -4,14 +4,11 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using SuperScrollView;
-using UnityGameFramework.Runtime;
-using UnityEngine.U2D;
 using open_im_sdk;
-using UnityEngine.SocialPlatforms;
 
 namespace Dawn.Game.UI
 {
-    public delegate void OnSelectMember(string[] members);
+    public delegate void OnSelectMember(FullUserInfo[] selectUsers);
     public class UISelectMember : UGuiForm
     {
         class Item
@@ -87,11 +84,11 @@ namespace Dawn.Game.UI
             {
                 if (selectMembers.Count > 0 && onSelectMember != null)
                 {
-                    var members = new string[selectMembers.Count];
+                    var members = new FullUserInfo[selectMembers.Count];
                     int index = 0;
                     foreach (var member in selectMembers)
                     {
-                        members[index] = member.Value.FriendInfo.FriendUserID;
+                        members[index] = member.Value;
                         index++;
                     }
                     onSelectMember(members);

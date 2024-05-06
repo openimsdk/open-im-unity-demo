@@ -50,7 +50,8 @@ namespace Dawn.Game.UI
                 }
                 SerachResultItem item = itemNode.UserObjectData as SerachResultItem;
                 FullUserInfo info = searchResultListInfo[index];
-                item.Name.text = info.PublicInfo.UserID;
+                item.Name.text = info.PublicInfo.Nickname;
+                SetImage(item.Icon, info.PublicInfo.FaceURL);
                 OnClick(item.Btn, () =>
                 {
                     CloseSelf();

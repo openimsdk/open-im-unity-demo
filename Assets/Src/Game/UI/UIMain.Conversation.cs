@@ -98,16 +98,10 @@ namespace Dawn.Game.UI
             DateTimeOffset dateTimeOffset = DateTimeOffset.FromUnixTimeMilliseconds(conversation.LatestMsgSendTime);
             DateTime localDateTime = dateTimeOffset.LocalDateTime;
             item.Time.text = localDateTime.ToShortTimeString();
-            if (conversation.LatestMsgStruct != null)
+            MsgStruct msg = open_im_sdk.util.Utils.FromJson<MsgStruct>(conversation.LatestMsg);
+            if (msg != null && msg.TextElem != null)
             {
-                if (conversation.LatestMsgStruct.TextElem != null)
-                {
-                    item.Msg.text = conversation.LatestMsgStruct.TextElem.Content;
-                }
-                else
-                {
-                    item.Msg.text = "";
-                }
+                item.Msg.text = msg.TextElem.Content;
             }
             else
             {
@@ -150,7 +144,6 @@ namespace Dawn.Game.UI
             var args = e as OnConversationChange;
             if (args.SyncServerStatus == SyncServerStatus.Finish)
             {
-                RefreshConversationList();
             }
             if (args.Conversation != null)
             {

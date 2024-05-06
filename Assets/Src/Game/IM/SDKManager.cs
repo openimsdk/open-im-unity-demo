@@ -4,7 +4,7 @@ using UnityEngine;
 using open_im_sdk;
 namespace Dawn.Game
 {
-    public class SDKHelper : MonoBehaviour
+    public class SDKManager : MonoBehaviour
     {
 
         void Start()
@@ -21,7 +21,7 @@ namespace Dawn.Game
                 LogFilePath = setting.LogDir,
                 IsExternalExtensions = true,
             };
-            var res = IMSDK.InitSDK(config, Player.Instance);
+            var res = open_im_sdk.IMSDK.InitSDK(config, Player.Instance);
             if (!res)
             {
                 Debug.Log("InitSDK:" + false);

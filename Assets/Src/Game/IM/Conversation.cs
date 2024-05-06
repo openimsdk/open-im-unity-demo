@@ -64,7 +64,9 @@ namespace Dawn.Game
 
         public void OnTotalUnreadMessageCountChanged(int totalUnreadCount)
         {
-
+            GameEntry.Event.Fire(OnConversationChange.EventId, new OnConversationChange()
+            {
+            });
         }
 
         public void OnConversationUserInputStatusChanged(InputStatesChangedData data)

@@ -20,9 +20,9 @@ namespace Dawn.Game.UI
         TMP_InputField token;
         Button loginBtn;
         Button registerBtn;
-
         Button requestTokenBtn;
 
+        Button settingBtn;
         protected override void OnInit(object userData)
         {
             base.OnInit(userData);
@@ -32,17 +32,14 @@ namespace Dawn.Game.UI
             registerBtn = GetButton("Panel/register");
 
             requestTokenBtn = GetButton("Panel/token/requesttoken");
+            settingBtn = GetButton("Panel/setting");
         }
         protected override void OnOpen(object userData)
         {
             base.OnOpen(userData);
 
-            userId.text = "";
-            token.text = "";
-#if UNITY_EDITOR_WIN
-            userId.text = "yejian001";
-            token.text = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOiJ5ZWppYW4wMDEiLCJQbGF0Zm9ybUlEIjozLCJleHAiOjE3MjA1MzA2NzEsIm5iZiI6MTcxMjc1NDM3MSwiaWF0IjoxNzEyNzU0NjcxfQ.eU_wa1lzQdhju313liT0wbw9dQ-9nWJmSoP2bGGnaeM";
-#endif
+            userId.text = GameEntry.Setting.GetString("lastUserId", "");
+            token.text = GameEntry.Setting.GetString("lastUserToken", "");
             OnClick(loginBtn, () =>
             {
                 login();
@@ -57,6 +54,11 @@ namespace Dawn.Game.UI
                 StartCoroutine(RefreshToken());
             });
 
+            OnClick(settingBtn, () =>
+            {
+                GameEntry.UI.OpenUI("Setting");
+            });
+
             GameEntry.Event.Subscribe(OnRegisterUser.EventId, HandleRegisterUser);
         }
 
@@ -64,6 +66,10 @@ namespace Dawn.Game.UI
         {
             base.OnClose(isShutdown, userData);
             GameEntry.Event.Unsubscribe(OnRegisterUser.EventId, HandleRegisterUser);
+
+            GameEntry.Setting.SetString("lastUserId", userId.text);
+            GameEntry.Setting.SetString("lastUserToken", token.text);
+            GameEntry.Setting.Save();
         }
 
         void login()

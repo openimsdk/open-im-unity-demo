@@ -17,6 +17,8 @@ namespace Dawn.Game.UI
         Image headIcon;
         Button registerBtn;
         Sprite defaultHeadIcon;
+
+        string selectHeadIcon = "";
         protected override void OnInit(object userData)
         {
             base.OnInit(userData);
@@ -33,6 +35,7 @@ namespace Dawn.Game.UI
         protected override void OnOpen(object userData)
         {
             base.OnOpen(userData);
+            selectHeadIcon = "headicon/不知火舞";
             OnClick(backBtn, () =>
             {
                 CloseSelf();
@@ -56,6 +59,7 @@ namespace Dawn.Game.UI
         public void OnSelectHeadIcon(string url)
         {
             SetImage(headIcon, url);
+            selectHeadIcon = url;
         }
 
         protected override void OnClose(bool isShutdown, object userData)
@@ -78,7 +82,7 @@ namespace Dawn.Game.UI
                         new UserRegisterInfo(){
                             userID = userId.text,
                             nickname = nickName.text,
-                            faceURL = headIcon.sprite.name,
+                            faceURL = selectHeadIcon,
                         },
                     },
             };

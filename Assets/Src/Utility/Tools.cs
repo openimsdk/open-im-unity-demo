@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -126,10 +127,14 @@ namespace Dawn
             for (int i = 0; i < pss.Length; i++)
             {
                 var ps = pss[i];
-                if (ps.main.loop){
+                if (ps.main.loop)
+                {
                     return -1.0f;
-                }else{
-                    if(ps.main.duration > duration){
+                }
+                else
+                {
+                    if (ps.main.duration > duration)
+                    {
                         duration = ps.main.duration;
                     }
                 }
@@ -139,17 +144,64 @@ namespace Dawn
         #endregion
 
         #region  动画
-        public static float GetAnimationDuration(Animator animator,string animName){
+        public static float GetAnimationDuration(Animator animator, string animName)
+        {
             float duration = -1;
             AnimationClip[] clips = animator.runtimeAnimatorController.animationClips;
-            foreach(AnimationClip clip in clips){
-                if (clip.name.Equals(animName)){
+            foreach (AnimationClip clip in clips)
+            {
+                if (clip.name.Equals(animName))
+                {
                     duration = clip.length;
                 }
             }
             return duration;
         }
         #endregion
+
+        public static int AndroidGetKeyboardHeight()
+        {
+            using (var unityClass = new AndroidJavaClass("com.unity3d.player.UnityPlayer"))
+            {
+                var currentActivity = unityClass.GetStatic<AndroidJavaObject>("currentActivity");
+                var unityPlayer = currentActivity.Get<AndroidJavaObject>("mUnityPlayer");
+                var view = unityPlayer.Call<AndroidJavaObject>("getView");
+                if (view == null) return 0;
+
+                int result;
+
+                using (var rect = new AndroidJavaObject("android.graphics.Rect"))
+                {
+                    view.Call("getWindowVisibleDisplayFrame", rect);
+                    result = Screen.height - rect.Call<int>("height");
+                }
+
+                if (TouchScreenKeyboard.hideInput) return result;
+
+                var softInputDialog = unityPlayer.Get<AndroidJavaObject>("mSoftInputDialog");
+                var window = softInputDialog?.Call<AndroidJavaObject>("getWindow");
+                var decorView = window?.Call<AndroidJavaObject>("getDecorView");
+
+                if (decorView == null) return result;
+
+                var decorHeight = decorView.Call<int>("getHeight");
+                result += decorHeight;
+
+                return result;
+            }
+        }
+
+
+        public static int GetSoftWareKeyboardHeight()
+        {
+#if !UNITY_EDITOR && UNITY_ANDROID  
+            return AndroidGetKeyboardHeight();
+#else
+            var area = TouchScreenKeyboard.area;
+            var height = Mathf.RoundToInt(area.height);
+            return Screen.height <= height ? 0 : height;
+#endif
+        }
     }
 }
 

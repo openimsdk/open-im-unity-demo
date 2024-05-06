@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using GameFramework.Event;
@@ -5,9 +6,9 @@ using open_im_sdk;
 using UnityGameFramework.Runtime;
 namespace Dawn.Game.Event
 {
-    public class OnFriendAdd : GameEventArgs
+    public class OnRecvMsg : GameEventArgs
     {
-        public static readonly int EventId = typeof(OnFriendAdd).GetHashCode();
+        public static readonly int EventId = typeof(OnRecvMsg).GetHashCode();
         public override int Id
         {
             get
@@ -15,13 +16,13 @@ namespace Dawn.Game.Event
                 return EventId;
             }
         }
-
-        public List<FullUserInfo> List;
-
+        public bool IsOffline;
+        public MsgStruct Msg;
 
         public override void Clear()
         {
-            List.Clear();
+            Msg = null;
+            IsOffline = false;
         }
     }
 }

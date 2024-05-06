@@ -21,6 +21,7 @@ namespace Dawn.Game.Event
             }
         }
         public bool Created;
+        public bool ClearHistory;
         public LocalConversation Conversation;
         public SyncServerStatus SyncServerStatus = SyncServerStatus.Empty;
         public override void Clear()
@@ -28,6 +29,7 @@ namespace Dawn.Game.Event
             Conversation = null;
             SyncServerStatus = SyncServerStatus.Empty;
             Created = false;
+            ClearHistory = false;
         }
     }
 }

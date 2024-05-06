@@ -11,6 +11,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.U2D;
 using UnityGameFramework.Runtime;
+using Dawn.Game.UI;
 
 namespace Dawn
 {
@@ -68,9 +69,24 @@ namespace Dawn
         {
             return ui.OpenUIForm(string.Format("Assets/BundleResources/UI/{0}.prefab", name), "OverLayer", userData);
         }
+
+        static int tipUIId = -1;
         public static void Tip(this UIComponent ui, string tip)
         {
             Debug.Log("Tip:" + tip);
+            if (tipUIId > 0 && ui.HasUIForm(tipUIId))
+            {
+                var form = ui.GetUIForm(tipUIId);
+                if (form != null)
+                {
+                    var uitip = form.Logic as UITip;
+                    uitip.ShowTip(tip);
+                }
+            }
+            else
+            {
+                tipUIId = ui.OpenUIOverLayer("Tip", tip);
+            }
         }
     }
 }

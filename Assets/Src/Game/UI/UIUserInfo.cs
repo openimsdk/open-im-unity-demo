@@ -7,6 +7,7 @@ using SuperScrollView;
 using UnityGameFramework.Runtime;
 using open_im_sdk;
 using open_im_sdk.util;
+using System.Runtime.InteropServices;
 
 namespace Dawn.Game.UI
 {
@@ -48,6 +49,15 @@ namespace Dawn.Game.UI
             {
                 CloseSelf();
             });
+            OnClick(remarkBtn, () =>
+            {
+                GameEntry.UI.Tip("TODO");
+            });
+            OnClick(audioChatBtn, () =>
+            {
+                GameEntry.UI.Tip("TODO");
+            });
+
             userIcon.sprite = null;
             userName.text = "";
             if (userId == IMSDK.GetLoginUser())

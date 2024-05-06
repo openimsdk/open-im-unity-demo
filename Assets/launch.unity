@@ -962,7 +962,7 @@ GameObject:
   - component: {fileID: 2007510425}
   - component: {fileID: 2007510426}
   m_Layer: 0
-  m_Name: SDKHelper
+  m_Name: IMSDK
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -995,7 +995,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e632cc193170500418943affb26f1a7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wsAddr: ws://14.29.168.56:20001
-  apiAddr: http://14.29.168.56:20002
-  dataDir: ./OpenIM
-  logDir: ./OpenIM/Logs
