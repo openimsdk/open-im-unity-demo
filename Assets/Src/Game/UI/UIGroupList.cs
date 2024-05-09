@@ -75,7 +75,6 @@ namespace Dawn.Game.UI
             {
                 if (list != null)
                 {
-                    Debug.Log(list.Count);
                     groupListInfo.AddRange(list);
                     RefreshList(groupList, groupListInfo.Count);
                 }

@@ -6,23 +6,19 @@ namespace Feif.UI
     public class SafeAreaAdapter : AdapterBase
     {
         [Header("是否每一帧都计算")]
-        public bool CalculateEveryFrame = false;
+        public bool CalculateEveryFrame = true;
         private RectTransform rect;
         private static CanvasScaler scaler;
-
-        public static void Init(CanvasScaler scaler)
+        void Awake()
         {
-            SafeAreaAdapter.scaler = scaler;
-        }
-
-        private void Awake()
-        {
-            SafeAreaAdapter.Init(GameObject.FindObjectOfType<CanvasScaler>());
+            scaler = FindObjectOfType<CanvasScaler>();
             rect = GetComponent<RectTransform>();
+        }
+        void Start()
+        {
             Adapt();
         }
-
-        private void Update()
+        void Update()
         {
             if (CalculateEveryFrame)
             {
@@ -33,8 +29,11 @@ namespace Feif.UI
         public override void Adapt()
         {
             if (scaler == null) return;
-
             var safeArea = Screen.safeArea;
+            var topHeight = Screen.height - safeArea.height;
+            safeArea.y = topHeight;
+            // Debug.Log(topHeight);
+            safeArea.height = Screen.height - topHeight * 2;
             int width = (int)(scaler.referenceResolution.x * (1 - scaler.matchWidthOrHeight) +
                 scaler.referenceResolution.y * Screen.width / Screen.height * scaler.matchWidthOrHeight);
             int height = (int)(scaler.referenceResolution.y * scaler.matchWidthOrHeight -

@@ -21,7 +21,7 @@ namespace Dawn.Game
                 LogFilePath = setting.LogDir,
                 IsExternalExtensions = true,
             };
-            var res = open_im_sdk.IMSDK.InitSDK(config, Player.Instance);
+            var res = IMSDK.InitSDK(config, Player.Instance);
             if (!res)
             {
                 Debug.Log("InitSDK:" + false);
