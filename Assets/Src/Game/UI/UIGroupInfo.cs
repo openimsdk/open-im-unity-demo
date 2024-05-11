@@ -25,6 +25,7 @@ namespace Dawn.Game.UI
         Button searchHistory;
         Button clearChat;
         Button groupExitBtn;
+        TextMeshProUGUI groupExitText;
         LocalGroup localGroup;
         List<LocalGroupMember> membersInfo;
         protected override void OnInit(object userData)
@@ -37,6 +38,7 @@ namespace Dawn.Game.UI
             searchHistory = GetButton("Panel/content/center/searchhistory/btn");
             clearChat = GetButton("Panel/content/center/clearchat/btn");
             groupExitBtn = GetButton("Panel/content/center/groupexit/btn");
+            groupExitText = GetTextPro("Panel/content/center/groupexit/btn/Text (TMP)");
 
             memberList.InitGridView(0, (list, index, row, rol) =>
             {
@@ -87,23 +89,49 @@ namespace Dawn.Game.UI
             {
                 CloseSelf();
             });
+            if (localGroup.OwnerUserID == IMSDK.GetLoginUser())
+            {
+                groupExitText.text = "解散群组";
+            }
+            else
+            {
+                groupExitText.text = "离开群组";
+            }
             OnClick(groupExitBtn, () =>
             {
+                if (localGroup.OwnerUserID == IMSDK.GetLoginUser())
+                {
+                    IMSDK.DismissGroup((suc, err, errMsg) =>
+                    {
+                        if (suc)
+                        {
+                            CloseSelf();
+                        }
+                        else
+                        {
+                            GameEntry.UI.Tip(errMsg);
+                        }
+                    }, localGroup.GroupID);
+                }
+                else
+                {
+                    IMSDK.QuitGroup((suc, err, errMsg) =>
+                    {
+                        if (suc)
+                        {
+                            CloseSelf();
+                        }
+                        else
+                        {
+                            GameEntry.UI.Tip(errMsg);
+                        }
+                    }, localGroup.GroupID);
+                }
 
             });
             OnClick(groupChatBtn, () =>
             {
-                IMSDK.QuitGroup((suc, err, errMsg) =>
-                {
-                    if (suc)
-                    {
-                        CloseSelf();
-                    }
-                    else
-                    {
-                        GameEntry.UI.Tip(errMsg);
-                    }
-                }, localGroup.GroupID);
+
             });
 
             OnClick(searchHistory, () =>

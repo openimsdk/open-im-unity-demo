@@ -103,6 +103,20 @@ namespace Dawn.Game.UI
         {
             base.OnOpen(userData);
             conversation = userData as LocalConversation;
+            if (conversation.UnreadCount > 0)
+            {
+                IMSDK.MarkConversationMessageAsRead((suc, err, errMsg) =>
+                {
+                    if (suc)
+                    {
+                        Debug.Log("Mark as Read");
+                    }
+                    else
+                    {
+                        Debug.Log(errMsg);
+                    }
+                }, conversation.ConversationID);
+            }
 
             msgInput.onSubmit.RemoveAllListeners();
             msgInput.onSubmit.AddListener((text) =>

@@ -85,7 +85,6 @@ namespace Dawn.Game.UI
             {
                 if (list != null)
                 {
-                    Debug.Log("11111111111----------" + list.Count);
                     userInfos = list;
                     RefreshList(friendList, userInfos.Count);
                 }

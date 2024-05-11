@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.Remoting.Messaging;
 using GameFramework.Event;
 using open_im_sdk;
 using UnityGameFramework.Runtime;
@@ -46,6 +47,23 @@ namespace Dawn.Game.Event
             Group = null;
             GroupRequest = null;
             GroupMemeber = null;
+        }
+
+        public bool IsGroupCountChange()
+        {
+            if (Operation == GroupOperation.GroupDismissed)
+            {
+                return true;
+            }
+            if (Operation == GroupOperation.JoinedGroupAdded)
+            {
+                return true;
+            }
+            if (Operation == GroupOperation.JoinedGroupDeleted)
+            {
+                return true;
+            }
+            return false; ;
         }
     }
 }

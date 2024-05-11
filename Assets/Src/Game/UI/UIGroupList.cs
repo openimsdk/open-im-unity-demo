@@ -4,6 +4,8 @@ using TMPro;
 using UnityEngine.UI;
 using SuperScrollView;
 using open_im_sdk;
+using Dawn.Game.Event;
+using GameFramework.Event;
 
 namespace Dawn.Game.UI
 {
@@ -71,10 +73,22 @@ namespace Dawn.Game.UI
                 CloseSelf();
             });
             groupListInfo.Clear();
+            RefreshGroupList();
+            GameEntry.Event.Subscribe(OnGroupChange.EventId, handleGroupChange);
+
+        }
+        protected override void OnClose(bool isShutdown, object userData)
+        {
+            base.OnClose(isShutdown, userData);
+        }
+
+        void RefreshGroupList()
+        {
             IMSDK.GetJoinedGroupList((list, errCode, errMsg) =>
             {
                 if (list != null)
                 {
+                    groupListInfo.Clear();
                     groupListInfo.AddRange(list);
                     RefreshList(groupList, groupListInfo.Count);
                 }
@@ -84,9 +98,14 @@ namespace Dawn.Game.UI
                 }
             });
         }
-        protected override void OnClose(bool isShutdown, object userData)
+
+        void handleGroupChange(object sender, GameEventArgs e)
         {
-            base.OnClose(isShutdown, userData);
+            var args = e as OnGroupChange;
+            if (args.IsGroupCountChange())
+            {
+                RefreshGroupList();
+            }
         }
     }
 }

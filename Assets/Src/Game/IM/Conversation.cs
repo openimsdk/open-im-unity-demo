@@ -66,6 +66,7 @@ namespace Dawn.Game
         {
             GameEntry.Event.Fire(OnConversationChange.EventId, new OnConversationChange()
             {
+                IsTotalUnReadChanged = true,
             });
         }
 

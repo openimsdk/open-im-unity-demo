@@ -24,12 +24,14 @@ namespace Dawn.Game.Event
         public bool ClearHistory;
         public LocalConversation Conversation;
         public SyncServerStatus SyncServerStatus = SyncServerStatus.Empty;
+        public bool IsTotalUnReadChanged;
         public override void Clear()
         {
             Conversation = null;
             SyncServerStatus = SyncServerStatus.Empty;
             Created = false;
             ClearHistory = false;
+            IsTotalUnReadChanged = false;
         }
     }
 }

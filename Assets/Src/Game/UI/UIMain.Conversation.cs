@@ -20,6 +20,8 @@ namespace Dawn.Game.UI
             public TextMeshProUGUI Name;
             public TextMeshProUGUI Time;
             public TextMeshProUGUI Msg;
+            public RectTransform UnRead;
+            public TextMeshProUGUI UnReadVal;
             public SwipeButton SwipeBtn;
             public Button PinBtn;
             public Button DeleteBtn;
@@ -52,6 +54,8 @@ namespace Dawn.Game.UI
                         Name = GetTextPro("name", parent),
                         Time = GetTextPro("time", parent),
                         Msg = GetTextPro("msg", parent),
+                        UnRead = GetRectTransform("unread", parent),
+                        UnReadVal = GetTextPro("unread/val", parent),
                         SwipeBtn = GetControl(typeof(SwipeButton), "", parent) as SwipeButton,
                         PinBtn = GetButton("menu/pin", parent),
                         DeleteBtn = GetButton("menu/delete", parent),
@@ -95,6 +99,8 @@ namespace Dawn.Game.UI
         {
             item.Name.text = conversation.ShowName;
             SetImage(item.Icon, conversation.FaceURL);
+            item.UnRead.gameObject.SetActive(conversation.UnreadCount > 0);
+            item.UnReadVal.text = conversation.UnreadCount > 99 ? "99" : conversation.UnreadCount.ToString();
             DateTimeOffset dateTimeOffset = DateTimeOffset.FromUnixTimeMilliseconds(conversation.LatestMsgSendTime);
             DateTime localDateTime = dateTimeOffset.LocalDateTime;
             item.Time.text = localDateTime.ToShortTimeString();
@@ -148,6 +154,10 @@ namespace Dawn.Game.UI
             if (args.Conversation != null)
             {
                 RefreshConversationList();
+            }
+            if (args.IsTotalUnReadChanged)
+            {
+                RefreshUnRead();
             }
         }
     }

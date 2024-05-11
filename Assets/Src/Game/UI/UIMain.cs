@@ -21,6 +21,8 @@ namespace Dawn.Game.UI
         TextMeshProUGUI title;
         Button topSearchBtn;
         Toggle[] toggles;
+        RectTransform unRead;
+        TextMeshProUGUI unReadVal;
         NavMenu selectNavMenu = NavMenu.Conversation;
 
         protected override void OnInit(object userData)
@@ -30,6 +32,8 @@ namespace Dawn.Game.UI
             topSearchBtn = GetButton("Panel/content/top/search");
             toggles = new Toggle[3];
             toggles[(int)NavMenu.Conversation] = GetToggle("Panel/content/bottom/menu/conversaton");
+            unRead = GetRectTransform("Panel/content/bottom/menu/conversaton/unread");
+            unReadVal = GetTextPro("Panel/content/bottom/menu/conversaton/unread/val");
             toggles[(int)NavMenu.Friend] = GetToggle("Panel/content/bottom/menu/friend");
             toggles[(int)NavMenu.Owner] = GetToggle("Panel/content/bottom/menu/owner");
             InitConversation();
@@ -78,10 +82,12 @@ namespace Dawn.Game.UI
             conversationRoot.gameObject.SetActive(selectNavMenu == NavMenu.Conversation);
             friendRoot.gameObject.SetActive(selectNavMenu == NavMenu.Friend);
             ownerRoot.gameObject.SetActive(selectNavMenu == NavMenu.Owner);
-
+            unRead.gameObject.SetActive(false);
             OpenConversation();
             OpenFriend();
             OpenOwner();
+
+            RefreshUnRead();
         }
 
         protected override void OnClose(bool isShutdown, object userData)
@@ -90,6 +96,18 @@ namespace Dawn.Game.UI
             CloseConversation();
             CloseFriend();
             CloseOwner();
+        }
+
+        void RefreshUnRead()
+        {
+            IMSDK.GetTotalUnreadMsgCount((unreadCount) =>
+            {
+                unRead.gameObject.SetActive(unreadCount > 0);
+                if (unreadCount > 0)
+                {
+                    unReadVal.text = unreadCount > 99 ? "99" : unreadCount.ToString();
+                }
+            });
         }
     }
 }
