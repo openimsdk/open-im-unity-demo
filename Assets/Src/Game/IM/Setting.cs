@@ -4,8 +4,8 @@ namespace Dawn.Game
 {
     public class Setting
     {
-        static bool dev = true;
-        // static bool dev = false;
+        // static bool dev = true;
+        static bool dev = false;
         static Setting instatnce;
         public static Setting Instance
         {
