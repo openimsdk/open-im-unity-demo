@@ -486,7 +486,7 @@ namespace UnityGameFramework.Editor.ResourceTools
             m_SourceAssetsViewScroll = EditorGUILayout.BeginScrollView(m_SourceAssetsViewScroll);
             {
                 DrawSourceFolder(m_Controller.SourceAssetRoot);
-                DrawSourceFolder(m_Controller.LuaSourceAssetRoot);
+                // DrawSourceFolder(m_Controller.LuaSourceAssetRoot);
             }
             EditorGUILayout.EndScrollView();
         }
