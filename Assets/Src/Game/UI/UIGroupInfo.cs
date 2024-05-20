@@ -131,7 +131,17 @@ namespace Dawn.Game.UI
             });
             OnClick(groupChatBtn, () =>
             {
-
+                IMSDK.GetOneConversation((conversation, err, errMsg) =>
+                {
+                    if (conversation != null)
+                    {
+                        GameEntry.UI.OpenUI("Chat", conversation);
+                    }
+                    else
+                    {
+                        Debug.LogError(err + ":" + errMsg);
+                    }
+                }, (int)ConversationType.Group, localGroup.GroupID);
             });
 
             OnClick(searchHistory, () =>

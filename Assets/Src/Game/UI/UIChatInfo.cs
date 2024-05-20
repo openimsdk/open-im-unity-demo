@@ -28,8 +28,8 @@ namespace Dawn.Game.UI
         Button clearChat;
         RectTransform groupExitRect;
         Button groupExitBtn;
-        // 在创建群组时会用到
-        LocalConversation conversation;
+
+        LocalConversation conversation;// 在创建群组时会用到
         LocalConversation createdConversation;
         List<LocalGroupMember> membersInfo;
 
