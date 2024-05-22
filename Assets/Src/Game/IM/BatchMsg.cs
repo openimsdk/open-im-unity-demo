@@ -22,8 +22,6 @@ namespace Dawn.Game
                     });
                 }
             }
-
-
         }
 
         public void OnRecvOfflineNewMessages(List<MsgStruct> messageList)

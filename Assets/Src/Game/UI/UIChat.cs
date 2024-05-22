@@ -26,6 +26,7 @@ namespace Dawn.Game.UI
             public RectTransform ContentBgRect;
             public TextMeshProUGUI ContentStr;
             public RectTransform ContentStrRect;
+            public TextMeshProUGUI ReadStatus;
             public ContentSizeFitter ContentSizeFitter;
             public LayoutElement LayoutElement;
         }
@@ -127,6 +128,7 @@ namespace Dawn.Game.UI
                 ContentBgRect = GetRectTransform("content/bg", parent),
                 ContentStr = GetTextPro("content/strMsg", parent),
                 ContentStrRect = GetRectTransform("content/strMsg", parent),
+                ReadStatus = GetTextPro("head/readstatus", parent),
             };
             node.ContentSizeFitter = node.ContentStrRect.GetComponent<ContentSizeFitter>();
             node.LayoutElement = node.ContentStrRect.GetComponent<LayoutElement>();
@@ -140,30 +142,31 @@ namespace Dawn.Game.UI
             }
             else
             {
-                item.ContentStr.text = "err message:empty";
+                item.ContentStr.text = "";
             }
-            if (item.ContentStr.preferredWidth < 500)
-            {
-                item.LayoutElement.preferredWidth = item.ContentStr.preferredWidth;
-            }
-            else
-            {
-                item.LayoutElement.preferredWidth = 500;
-            }
+            item.LayoutElement.preferredWidth = Mathf.Clamp(item.ContentStr.preferredWidth, 100, 500);
             LayoutRebuilder.ForceRebuildLayoutImmediate(item.ContentStrRect);
             var contentSize = item.ContentStrRect.sizeDelta;
             item.ContentBgRect.sizeDelta = contentSize + new Vector2(30, 30);
             item.ContentRect.sizeDelta = item.ContentBgRect.sizeDelta;
-            var y = item.ContentRect.sizeDelta.y + 20;
-            if (y < 10)
+            var y = item.ContentRect.sizeDelta.y + 30;
+            if (y < 130)
             {
-                y = 100;
+                y = 130;
             }
             item.Rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, y);
             if (isSelf)
             {
                 item.ContentArrow.color = Color.white;
                 item.ContentBg.color = Color.white;
+                if (conversation.ConversationType == (int)ConversationType.Single)
+                {
+                    item.ReadStatus.text = msgStruct.IsRead ? "已读" : "未读";
+                }
+                else
+                {
+                    item.ReadStatus.text = "";
+                }
                 if (selfUserInfo != null)
                 {
                     SetImage(item.Icon, selfUserInfo.FaceURL);
@@ -221,6 +224,7 @@ namespace Dawn.Game.UI
             GameEntry.Event.Subscribe(OnGroupChange.EventId, HandleCreateGroup);
             GameEntry.Event.Subscribe(OnRecvMsg.EventId, HandleOnRecvMsg);
             GameEntry.Event.Subscribe(OnConversationChange.EventId, HandleOnConversationChange);
+            GameEntry.Event.Subscribe(OnAdvancedMsg.EventId, HandleOnAdvancedMsg);
 
         }
         protected override void OnUpdate(float elapseSeconds, float realElapseSeconds)
@@ -237,6 +241,7 @@ namespace Dawn.Game.UI
             GameEntry.Event.Unsubscribe(OnGroupChange.EventId, HandleCreateGroup);
             GameEntry.Event.Unsubscribe(OnRecvMsg.EventId, HandleOnRecvMsg);
             GameEntry.Event.Unsubscribe(OnConversationChange.EventId, HandleOnConversationChange);
+            GameEntry.Event.Unsubscribe(OnAdvancedMsg.EventId, HandleOnAdvancedMsg);
         }
         void OnBeginDrag()
         {
@@ -429,6 +434,34 @@ namespace Dawn.Game.UI
             }
         }
 
+        void HandleOnAdvancedMsg(object sender, GameEventArgs e)
+        {
+            var args = e as OnAdvancedMsg;
+            if (args.AdvancedMsgOperation == AdvancedMsgOperation.C2CReadReceipt || args.AdvancedMsgOperation == AdvancedMsgOperation.GroupReadReceipt)
+            {
+                if (args.MsgReceipts != null && args.MsgReceipts.Count > 0)
+                {
+                    foreach (var msgStruct in msgList)
+                    {
+                        foreach (var receipt in args.MsgReceipts)
+                        {
+                            if (msgStruct.RecvID == receipt.UserID)
+                            {
+                                msgStruct.IsRead = true;
+                            }
+                        }
+                    }
+                    if (chatList.gameObject.activeSelf)
+                    {
+                        chatList.RefreshAllShownItem();
+                    }
+                    else
+                    {
+                        chatList_topdown.RefreshAllShownItem();
+                    }
+                }
+            }
+        }
     }
 }
 
