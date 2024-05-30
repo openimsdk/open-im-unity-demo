@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "com.unity.device-simulator.devices": "1.0.0",
+    "com.unity.feature.2d": "1.0.0",
     "com.unity.ide.vscode": "1.2.5",
     "com.unity.nuget.newtonsoft-json": "3.2.1",
     "com.unity.textmeshpro": "3.0.8",

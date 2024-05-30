@@ -93,7 +93,6 @@ namespace Dawn.Game.UI
                 });
                 item.Name.text = null;
                 item.Icon.sprite = null;
-                Debug.Log(info.HandleResult);
                 if (info.FromUserID == IMSDK.GetLoginUser())
                 {
                     item.Name.text = info.ToNickname;
