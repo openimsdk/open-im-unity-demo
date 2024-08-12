@@ -19,7 +19,7 @@
 
 <br>
 
-A OpenIM Unity demo. Currently only supports Windows and Android, with support for iOS, Mac, and other platforms coming in the future.
+A OpenIM Unity demo. Currently supports Windows, Android, iOS, Mac.
 
 ## Tech Stack 🛠️
 
