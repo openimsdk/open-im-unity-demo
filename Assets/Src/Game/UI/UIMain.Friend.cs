@@ -5,7 +5,7 @@ using SuperScrollView;
 using System.Collections.Generic;
 using Dawn.Game.Event;
 using GameFramework.Event;
-using open_im_sdk;
+using OpenIM.IMSDK.Unity;
 
 namespace Dawn.Game.UI
 {

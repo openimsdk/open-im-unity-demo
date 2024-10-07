@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using open_im_sdk;
+using OpenIM.IMSDK.Unity;
 namespace Dawn.Game
 {
     public class SDKManager : MonoBehaviour

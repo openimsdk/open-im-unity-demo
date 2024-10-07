@@ -3,7 +3,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using SuperScrollView;
-using open_im_sdk;
+using OpenIM.IMSDK.Unity;
 using Dawn.Game.Event;
 using GameFramework.Event;
 

@@ -8,7 +8,7 @@ using SuperScrollView;
 using UnityGameFramework.Runtime;
 using Dawn.Game.Event;
 using System;
-using open_im_sdk;
+using OpenIM.IMSDK.Unity;
 using System.Text;
 using GameFramework.Event;
 

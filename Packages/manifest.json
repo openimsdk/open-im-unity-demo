@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.openim.imsdk": "https://github.com/openimsdk/open-im-sdk-unity.git",
     "com.unity.device-simulator.devices": "1.0.0",
     "com.unity.feature.2d": "1.0.0",
     "com.unity.ide.vscode": "1.2.5",

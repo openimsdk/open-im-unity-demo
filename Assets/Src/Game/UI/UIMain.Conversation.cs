@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using open_im_sdk;
+using OpenIM.IMSDK.Unity;
 using SuperScrollView;
 using TMPro;
 using UnityEngine;
@@ -104,7 +104,7 @@ namespace Dawn.Game.UI
             DateTimeOffset dateTimeOffset = DateTimeOffset.FromUnixTimeMilliseconds(conversation.LatestMsgSendTime);
             DateTime localDateTime = dateTimeOffset.LocalDateTime;
             item.Time.text = localDateTime.ToShortTimeString();
-            MsgStruct msg = open_im_sdk.util.Utils.FromJson<MsgStruct>(conversation.LatestMsg);
+            MsgStruct msg = OpenIM.IMSDK.Unity.Util.Utils.FromJson<MsgStruct>(conversation.LatestMsg);
             if (msg != null && msg.TextElem != null)
             {
                 item.Msg.text = msg.TextElem.Content;

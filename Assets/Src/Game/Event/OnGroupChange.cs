@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Remoting.Messaging;
 using GameFramework.Event;
-using open_im_sdk;
+using OpenIM.IMSDK.Unity;
 using UnityGameFramework.Runtime;
 namespace Dawn.Game.Event
 {

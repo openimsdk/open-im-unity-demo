@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using TMPro;
-using open_im_sdk;
+using OpenIM.IMSDK.Unity;
 using Dawn.Game.Event;
 using GameFramework;
 using GameFramework.Event;
