@@ -29,14 +29,7 @@ A OpenIM Unity demo. Currently supports Windows, Android, iOS, Mac.
 ## Dev Env 🛠️
 
 1. Unity 2022.1.24f1(Windows)
-
-## Build 🚀
-
-```bash
-git clone  https://github.com/openimsdk/open-im-unity-demo.git
-cd ./open-im-unity-demo/Assets
-git clone https://github.com/openimsdk/open-im-sdk-unity.git
-```
+2. [UnityGameFrameWork](https://github.com/EllanJiang/UnityGameFramework.git)
 
 ## Community :busts_in_silhouette:
 
@@ -44,4 +37,3 @@ git clone https://github.com/openimsdk/open-im-sdk-unity.git
 - 💕 [OpenIM Interest Group](https://github.com/Openim-sigs)
 - 🚀 [Join our Slack community](https://join.slack.com/t/openimsdk/shared_invite/zt-22720d66b-o_FvKxMTGXtcnnnHiMqe9Q)
 - :eyes: [Join our wechat (微信群)](https://openim-1253691595.cos.ap-nanjing.myqcloud.com/WechatIMG20.jpeg)
-
