@@ -72,6 +72,12 @@ namespace Dawn.Game
 
         public void OnConversationUserInputStatusChanged(InputStatesChangedData data)
         {
+            // TODO
+        }
+
+        public void OnSyncServerProgress(int progress)
+        {
+            // TODO
         }
     }
 }

@@ -12,6 +12,18 @@ namespace Dawn.Game
         {
         }
 
+        public void OnUserCommandAdd(string userCommand)
+        {
+        }
+
+        public void OnUserCommandDelete(string userCommand)
+        {
+        }
+
+        public void OnUserCommandUpdate(string userCommand)
+        {
+        }
+
         public void OnUserStatusChanged(OnlineStatus userOnlineStatus)
         {
         }

@@ -3,6 +3,7 @@ using GameFramework.Fsm;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Dawn.Game;
 namespace Dawn
 {
 

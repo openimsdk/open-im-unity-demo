@@ -1,14 +1,9 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using TMPro;
 using UnityEngine.UI;
-using SuperScrollView;
-using UnityGameFramework.Runtime;
 using Dawn.Game.Event;
-using System;
-using OpenIM.IMSDK.Unity;
 using System.Text;
 using GameFramework.Event;
 
@@ -22,7 +17,6 @@ namespace Dawn.Game.UI
         Button registerBtn;
         Button requestTokenBtn;
 
-        Button settingBtn;
         protected override void OnInit(object userData)
         {
             base.OnInit(userData);
@@ -32,7 +26,6 @@ namespace Dawn.Game.UI
             registerBtn = GetButton("Panel/register");
 
             requestTokenBtn = GetButton("Panel/token/requesttoken");
-            settingBtn = GetButton("Panel/setting");
         }
         protected override void OnOpen(object userData)
         {
@@ -52,11 +45,6 @@ namespace Dawn.Game.UI
             OnClick(requestTokenBtn, () =>
             {
                 StartCoroutine(RefreshToken());
-            });
-
-            OnClick(settingBtn, () =>
-            {
-                GameEntry.UI.OpenUI("Setting");
             });
 
             GameEntry.Event.Subscribe(OnRegisterUser.EventId, HandleRegisterUser);
@@ -96,7 +84,7 @@ namespace Dawn.Game.UI
 
         IEnumerator RefreshToken()
         {
-            var url = string.Format("{0}{1}", Setting.Instance.HttpURL, "/auth/user_token");
+            var url = string.Format("{0}{1}", GameEntry.IM.apiAddr, "/auth/get_user_token");
             Debug.Log(url);
             var userTokenReq = new UserTokenReq()
             {
@@ -104,12 +92,15 @@ namespace Dawn.Game.UI
                 platformID = (int)Player.PlatformID,
                 userID = userId.text,
             };
-            var bodyData = Encoding.UTF8.GetBytes(JsonUtility.ToJson(userTokenReq));
+            var reqStr = JsonUtility.ToJson(userTokenReq);
+            Debug.Log(reqStr);
+            var bodyData = Encoding.UTF8.GetBytes(reqStr);
             UnityWebRequest www = new UnityWebRequest(url, UnityWebRequest.kHttpVerbPOST);
             DownloadHandler downloadHandler = new DownloadHandlerBuffer();
             www.downloadHandler = downloadHandler;
             www.SetRequestHeader("Content-Type", "application/json;charset=utf-8");
-            www.SetRequestHeader("operationID", "111111");
+            www.SetRequestHeader("operationID", "123456");
+            www.SetRequestHeader("token", GameEntry.IM.imAdminToken);
             www.uploadHandler = new UploadHandlerRaw(bodyData);
             yield return www.SendWebRequest();
             if (www.result == UnityWebRequest.Result.Success)

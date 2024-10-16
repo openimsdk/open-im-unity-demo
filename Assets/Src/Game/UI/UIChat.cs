@@ -371,7 +371,7 @@ namespace Dawn.Game.UI
                 }
             }, msgStruct, conversation.UserID, conversation.GroupID, new OfflinePushInfo()
             {
-            });
+            }, true);
             msgInput.text = "";
         }
 

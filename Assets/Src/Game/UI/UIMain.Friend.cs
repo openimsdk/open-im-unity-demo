@@ -92,7 +92,7 @@ namespace Dawn.Game.UI
                 {
                     Debug.LogError(errMsg);
                 }
-            });
+            }, true);
         }
         void CloseFriend()
         {

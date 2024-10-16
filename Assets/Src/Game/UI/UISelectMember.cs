@@ -108,7 +108,7 @@ namespace Dawn.Game.UI
                 {
                     GameEntry.UI.Tip(errMsg);
                 }
-            });
+            }, true);
         }
         protected override void OnClose(bool isShutdown, object userData)
         {
