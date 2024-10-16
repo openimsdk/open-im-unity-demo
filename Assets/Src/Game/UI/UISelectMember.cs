@@ -4,7 +4,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using SuperScrollView;
-using open_im_sdk;
+using OpenIM.IMSDK.Unity;
 
 namespace Dawn.Game.UI
 {
@@ -108,7 +108,7 @@ namespace Dawn.Game.UI
                 {
                     GameEntry.UI.Tip(errMsg);
                 }
-            });
+            }, true);
         }
         protected override void OnClose(bool isShutdown, object userData)
         {

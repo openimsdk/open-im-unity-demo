@@ -1,4 +1,6 @@
 ﻿
+using Dawn.Game;
+using OpenIM.IMSDK.Unity;
 using UnityEngine;
 
 namespace Dawn
@@ -17,17 +19,26 @@ namespace Dawn
             private set;
         }
 
-        public static NetResourceComponent NetResource{
+        public static NetResourceComponent NetResource
+        {
             get;
             private set;
         }
 
-        public static WebSocketComponent WebSocket {
+        public static WebSocketComponent WebSocket
+        {
             get;
             private set;
         }
 
-        public static SpriteAltasComponent SpriteAltas{
+        public static SpriteAltasComponent SpriteAltas
+        {
+            get;
+            private set;
+        }
+
+        public static IMComponent IM
+        {
             get;
             private set;
         }
@@ -39,6 +50,8 @@ namespace Dawn
             NetResource = UnityGameFramework.Runtime.GameEntry.GetComponent<NetResourceComponent>();
             WebSocket = UnityGameFramework.Runtime.GameEntry.GetComponent<WebSocketComponent>();
             SpriteAltas = UnityGameFramework.Runtime.GameEntry.GetComponent<SpriteAltasComponent>();
+            IM = UnityGameFramework.Runtime.GameEntry.GetComponent<IMComponent>();
+
         }
     }
 

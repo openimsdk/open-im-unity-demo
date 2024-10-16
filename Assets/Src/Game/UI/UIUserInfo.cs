@@ -5,8 +5,8 @@ using TMPro;
 using UnityEngine.UI;
 using SuperScrollView;
 using UnityGameFramework.Runtime;
-using open_im_sdk;
-using open_im_sdk.util;
+using OpenIM.IMSDK.Unity;
+using OpenIM.IMSDK.Unity.Util;
 using System.Runtime.InteropServices;
 
 namespace Dawn.Game.UI

@@ -2,7 +2,7 @@
 using GameFramework.Procedure;
 using Dawn.Game.Event;
 using GameFramework.Event;
-using open_im_sdk;
+using OpenIM.IMSDK.Unity;
 using UnityEngine;
 namespace Dawn.Game
 {

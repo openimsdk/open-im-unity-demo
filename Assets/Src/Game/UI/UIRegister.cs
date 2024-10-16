@@ -73,7 +73,7 @@ namespace Dawn.Game.UI
 
         IEnumerator RegisterUser()
         {
-            var url = string.Format("{0}{1}", Setting.Instance.HttpURL, "/user/user_register");
+            var url = string.Format("{0}{1}", GameEntry.IM.apiAddr, "/user/user_register");
             Debug.Log(url);
             var userRegisterReq = new UserRegisterReq()
             {
@@ -91,7 +91,8 @@ namespace Dawn.Game.UI
             DownloadHandler downloadHandler = new DownloadHandlerBuffer();
             www.downloadHandler = downloadHandler;
             www.SetRequestHeader("Content-Type", "application/json;charset=utf-8");
-            www.SetRequestHeader("operationID", "111111");
+            www.SetRequestHeader("operationID", "123456");
+            www.SetRequestHeader("token", GameEntry.IM.imAdminToken);
             www.uploadHandler = new UploadHandlerRaw(bodyData);
             yield return www.SendWebRequest();
             if (www.result == UnityWebRequest.Result.Success)

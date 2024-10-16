@@ -1,4 +1,5 @@
-using open_im_sdk;
+using OpenIM.IMSDK.Unity;
+using OpenIM.IMSDK.Unity.Listener;
 using UnityEngine;
 
 namespace Dawn.Game
@@ -11,7 +12,7 @@ namespace Dawn.Game
     {
         Empty, OnConnecting, ConnSuc, ConnFailed, KickOffline, TokenExpired
     }
-    public class Player : IConnCallBack
+    public class Player
     {
         static Player instance;
         public static Player Instance
@@ -25,72 +26,69 @@ namespace Dawn.Game
                 return instance;
             }
         }
-        public Conversation Conversation;
-        public FriendShip FriendShip;
-        public Group Group;
-        public AdvancedMsg AdvancedMsg;
-        public BatchMsg BatchMsg;
-        public User User;
-        public CustomBusiness CustomBusiness;
+
         public UserStatus Status = UserStatus.NoLogin;
+        public Conn conn;
+        public Conversation conversation;
+        public FriendShip friend;
+        public Group group;
+        public AdvancedMsg advancedMsg;
+        public BatchMsg batchMsg;
+        public User user;
+        public CustomBusiness customBusiness;
         private Player()
         {
-            Conversation = new Conversation();
-            FriendShip = new FriendShip();
-            Group = new Group();
-            AdvancedMsg = new AdvancedMsg();
-            BatchMsg = new BatchMsg();
-            User = new User();
-            CustomBusiness = new CustomBusiness();
-
-            IMSDK.SetConversationListener(Conversation);
-            IMSDK.SetGroupListener(Group);
-            IMSDK.SetFriendShipListener(FriendShip);
-            IMSDK.SetAdvancedMsgListener(AdvancedMsg);
-            IMSDK.SetBatchMsgListener(BatchMsg);
-            IMSDK.SetUserListener(User);
-            IMSDK.SetCustomBusinessListener(CustomBusiness);
-        }
-        public void OnConnecting()
-        {
-            GameEntry.Event.FireNow(this, new Event.OnConnStatusChange()
-            {
-                ConnStatus = ConnStatus.OnConnecting
-            });
+            conn = new Conn();
+            conversation = new Conversation();
+            friend = new FriendShip();
+            group = new Group();
+            advancedMsg = new AdvancedMsg();
+            batchMsg = new BatchMsg();
+            user = new User();
+            customBusiness = new CustomBusiness();
         }
 
-        public void OnConnectSuccess()
+
+        public static PlatformID PlatformID
         {
-            GameEntry.Event.FireNow(this, new Event.OnConnStatusChange()
+            get
             {
-                ConnStatus = ConnStatus.ConnSuc
-            });
+                if (Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.WindowsPlayer)
+                {
+                    return PlatformID.WindowsPlatformID;
+                }
+                else if (Application.platform == RuntimePlatform.OSXEditor || Application.platform == RuntimePlatform.OSXPlayer)
+                {
+                    return PlatformID.OSXPlatformID;
+                }
+                else if (Application.platform == RuntimePlatform.Android)
+                {
+                    return PlatformID.AndroidPlatformID;
+                }
+                else if (Application.platform == RuntimePlatform.IPhonePlayer)
+                {
+                    return PlatformID.IOSPlatformID;
+                }
+                return PlatformID.None;
+            }
         }
-        public void OnConnectFailed(int errCode, string errMsg)
+
+        public ListenGroup GetListenGroup()
         {
-            GameEntry.Event.FireNow(this, new Event.OnConnStatusChange()
-            {
-                ConnStatus = ConnStatus.ConnFailed
-            });
-        }
-        public void OnKickedOffline()
-        {
-            GameEntry.Event.FireNow(this, new Event.OnConnStatusChange()
-            {
-                ConnStatus = ConnStatus.KickOffline
-            });
-        }
-        public void OnUserTokenExpired()
-        {
-            GameEntry.Event.FireNow(this, new Event.OnConnStatusChange()
-            {
-                ConnStatus = ConnStatus.TokenExpired
-            });
+            return new ListenGroup(
+                conn,
+                conversation,
+                group,
+                friend,
+                advancedMsg,
+                user,
+                customBusiness,
+                batchMsg
+            );
         }
 
         public void Login(string userId, string token)
         {
-            Debug.Log("Login:" + userId + " " + token);
             IMSDK.Login(userId, token, (suc, errCode, errMsg) =>
             {
                 if (suc)
@@ -115,30 +113,6 @@ namespace Dawn.Game
             {
                 UserStatus = UserStatus.LoginSuc
             });
-        }
-
-        public static PlatformID PlatformID
-        {
-            get
-            {
-                if (Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.WindowsPlayer)
-                {
-                    return PlatformID.WindowsPlatformID;
-                }
-                else if (Application.platform == RuntimePlatform.OSXEditor || Application.platform == RuntimePlatform.OSXPlayer)
-                {
-                    return PlatformID.OSXPlatformID;
-                }
-                else if (Application.platform == RuntimePlatform.Android)
-                {
-                    return PlatformID.AndroidPlatformID;
-                }
-                else if (Application.platform == RuntimePlatform.IPhonePlayer)
-                {
-                    return PlatformID.IOSPlatformID;
-                }
-                return PlatformID.None;
-            }
         }
     }
 }

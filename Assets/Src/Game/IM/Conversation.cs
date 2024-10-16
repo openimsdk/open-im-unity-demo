@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Dawn.Game.Event;
-using open_im_sdk;
-using open_im_sdk.listener;
+using OpenIM.IMSDK.Unity;
+using OpenIM.IMSDK.Unity.Listener;
 
 namespace Dawn.Game
 {
@@ -72,6 +72,12 @@ namespace Dawn.Game
 
         public void OnConversationUserInputStatusChanged(InputStatesChangedData data)
         {
+            // TODO
+        }
+
+        public void OnSyncServerProgress(int progress)
+        {
+            // TODO
         }
     }
 }

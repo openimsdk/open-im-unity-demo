@@ -3,7 +3,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using SuperScrollView;
-using open_im_sdk;
+using OpenIM.IMSDK.Unity;
 using Dawn.Game.Event;
 using GameFramework.Event;
 using System;
@@ -131,7 +131,17 @@ namespace Dawn.Game.UI
             });
             OnClick(groupChatBtn, () =>
             {
-
+                IMSDK.GetOneConversation((conversation, err, errMsg) =>
+                {
+                    if (conversation != null)
+                    {
+                        GameEntry.UI.OpenUI("Chat", conversation);
+                    }
+                    else
+                    {
+                        Debug.LogError(err + ":" + errMsg);
+                    }
+                }, (int)ConversationType.Group, localGroup.GroupID);
             });
 
             OnClick(searchHistory, () =>

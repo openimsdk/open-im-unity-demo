@@ -1,7 +1,7 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-using open_im_sdk;
+using OpenIM.IMSDK.Unity;
 using Dawn.Game.Event;
 
 namespace Dawn.Game.UI

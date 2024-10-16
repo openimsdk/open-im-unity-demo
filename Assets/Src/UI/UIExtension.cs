@@ -17,6 +17,18 @@ namespace Dawn
 {
     public static class UIExtension
     {
+        static Camera camera;
+        public static Camera UICamera
+        {
+            get
+            {
+                if (camera == null)
+                {
+                    camera = GameObject.FindWithTag("UICamera").GetComponent<Camera>();
+                }
+                return camera;
+            }
+        }
         public static IEnumerator FadeToAlpha(this CanvasGroup canvasGroup, float alpha, float duration)
         {
             float time = 0f;

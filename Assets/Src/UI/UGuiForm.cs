@@ -249,16 +249,16 @@ namespace Dawn
         {
             if (list.ItemTotalCount != count)
             {
-                list.SetListItemCount(count);
+                list.SetListItemCount(count, resetPos);
             }
             else
             {
-                list.RefreshAllShownItem();
+                if (resetPos)
+                {
+                    list.MovePanelToItemIndex(0, 0);
+                }
             }
-            if (resetPos)
-            {
-                list.MovePanelToItemIndex(0, 0);
-            }
+            list.RefreshAllShownItem();
         }
         public void RefreshGrid(LoopGridView grid, int count, bool resetPos = false)
         {

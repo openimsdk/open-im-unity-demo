@@ -3,7 +3,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using SuperScrollView;
-using open_im_sdk;
+using OpenIM.IMSDK.Unity;
 using Dawn.Game.Event;
 using GameFramework.Event;
 
@@ -93,7 +93,6 @@ namespace Dawn.Game.UI
                 });
                 item.Name.text = null;
                 item.Icon.sprite = null;
-                Debug.Log(info.HandleResult);
                 if (info.FromUserID == IMSDK.GetLoginUser())
                 {
                     item.Name.text = info.ToNickname;

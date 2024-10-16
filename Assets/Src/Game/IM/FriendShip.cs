@@ -1,8 +1,8 @@
 
 using System.Collections.Generic;
 using Dawn.Game.Event;
-using open_im_sdk;
-using open_im_sdk.listener;
+using OpenIM.IMSDK.Unity;
+using OpenIM.IMSDK.Unity.Listener;
 
 
 namespace Dawn.Game

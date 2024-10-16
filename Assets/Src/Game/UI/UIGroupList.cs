@@ -3,7 +3,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using SuperScrollView;
-using open_im_sdk;
+using OpenIM.IMSDK.Unity;
 using Dawn.Game.Event;
 using GameFramework.Event;
 
@@ -20,12 +20,14 @@ namespace Dawn.Game.UI
             public Button DeleteBtn;
         }
         Button backBtn;
+        Button createGroupBtn;
         LoopListView2 groupList;
         List<LocalGroup> groupListInfo;
         protected override void OnInit(object userData)
         {
             base.OnInit(userData);
             backBtn = GetButton("Panel/content/top/back");
+            createGroupBtn = GetButton("Panel/content/top/create");
             groupList = GetListView("Panel/content/list");
             groupListInfo = new List<LocalGroup>();
             groupList.InitListView(0, (list, index) =>
@@ -49,6 +51,7 @@ namespace Dawn.Game.UI
                 var info = groupListInfo[index];
                 var item = itemNode.UserObjectData as GroupItem;
                 item.Name.text = info.GroupName;
+                SetImage(item.Icon, info.FaceURL);
                 item.SwipeBtn.OnSwipe.RemoveAllListeners();
                 item.SwipeBtn.OnSwipe.AddListener((dx, dy) =>
                 {
@@ -72,6 +75,10 @@ namespace Dawn.Game.UI
             {
                 CloseSelf();
             });
+            OnClick(createGroupBtn, () =>
+            {
+                GameEntry.UI.OpenUI("CreateGroup");
+            });
             groupListInfo.Clear();
             RefreshGroupList();
             GameEntry.Event.Subscribe(OnGroupChange.EventId, handleGroupChange);
@@ -80,6 +87,7 @@ namespace Dawn.Game.UI
         protected override void OnClose(bool isShutdown, object userData)
         {
             base.OnClose(isShutdown, userData);
+            GameEntry.Event.Unsubscribe(OnGroupChange.EventId, handleGroupChange);
         }
 
         void RefreshGroupList()
