@@ -35,7 +35,6 @@ namespace Dawn.Game
         public AdvancedMsg advancedMsg;
         public BatchMsg batchMsg;
         public User user;
-        public CustomBusiness customBusiness;
         private Player()
         {
             conn = new Conn();
@@ -45,9 +44,7 @@ namespace Dawn.Game
             advancedMsg = new AdvancedMsg();
             batchMsg = new BatchMsg();
             user = new User();
-            customBusiness = new CustomBusiness();
         }
-
 
         public static PlatformID PlatformID
         {
@@ -73,18 +70,14 @@ namespace Dawn.Game
             }
         }
 
-        public ListenGroup GetListenGroup()
+        public void RegisterListener()
         {
-            return new ListenGroup(
-                conn,
-                conversation,
-                group,
-                friend,
-                advancedMsg,
-                user,
-                customBusiness,
-                batchMsg
-            );
+            IMSDK.SetConversationListener(conversation);
+            IMSDK.SetFriendShipListener(friend);
+            IMSDK.SetGroupListener(group);
+            IMSDK.SetAdvancedMsgListener(advancedMsg);
+            IMSDK.SetBatchMsgListener(batchMsg);
+            IMSDK.SetUserListener(user);
         }
 
         public void Login(string userId, string token)
@@ -97,7 +90,6 @@ namespace Dawn.Game
                 }
                 else
                 {
-                    Debug.LogError(errCode + " " + errMsg);
                     Status = UserStatus.LoginFailed;
                     GameEntry.Event.Fire(this, new Event.OnLoginStatusChange()
                     {

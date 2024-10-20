@@ -21,7 +21,7 @@ namespace Dawn.Game.Event
             }
         }
         public AdvancedMsgOperation AdvancedMsgOperation;
-        public MsgStruct Msg;
+        public Message Msg;
         public MessageRevoked MsgRevoked;
         public List<MessageReceipt> MsgReceipts;
         public override void Clear()

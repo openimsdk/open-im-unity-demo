@@ -19,9 +19,9 @@ namespace Dawn.Game.Event
                 return EventId;
             }
         }
-        public LocalBlack Black;
-        public LocalFriend Friend;
-        public LocalFriendRequest FriendRequest;
+        public BlackInfo Black;
+        public FriendInfo Friend;
+        public FriendApplicationInfo FriendRequest;
         public FriendOperation Operation;
         public override void Clear()
         {

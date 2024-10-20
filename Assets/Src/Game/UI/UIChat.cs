@@ -15,6 +15,26 @@ namespace Dawn.Game.UI
         {
             None, Done, Requesting,
         }
+        class SendMsgCallBack : IMsgSendCallBack
+        {
+            UIChat ui;
+            public SendMsgCallBack(UIChat ui)
+            {
+
+            }
+            public void OnError(int code, string errMsg)
+            {
+            }
+
+            public void OnProgress(long progress)
+            {
+            }
+
+            public void OnSuccess(Message msg)
+            {
+                ui.OnSendMsgSuc(msg);
+            }
+        }
         public class ChatItem
         {
             public RectTransform Rect;
@@ -36,14 +56,16 @@ namespace Dawn.Game.UI
         LoopListView2 chatList;
         LoopListView2 chatList_topdown;
         TMP_InputField msgInput;
-        List<MsgStruct> msgList;
+        List<Message> msgList;
         RectTransform centerRect;
         RectTransform listRect;
         RectTransform contentRect;
-        LocalConversation conversation;
-        LocalUser selfUserInfo;
+        OpenIM.IMSDK.Unity.Conversation conversation;
+        UserInfo selfUserInfo;
 
         RequestHistoryStatus requestHistoryStatus = RequestHistoryStatus.None;
+
+        SendMsgCallBack sendMsgCallBack;
 
         protected override void OnInit(object userData)
         {
@@ -58,7 +80,7 @@ namespace Dawn.Game.UI
             centerRect = GetRectTransform("Panel/content/center");
             listRect = GetRectTransform("Panel/content/center/list");
             contentRect = GetRectTransform("Panel/content/center/list/Viewport/Content");
-            msgList = new List<MsgStruct>();
+            msgList = new List<Message>();
             chatList.InitListView(0, (list, index) =>
             {
                 if (index < 0) return null;
@@ -66,7 +88,7 @@ namespace Dawn.Game.UI
                 LoopListViewItem2 itemNode = null;
                 var msgStruct = msgList[index];
                 var isSelf = false;
-                isSelf = msgStruct.SendID == IMSDK.GetLoginUser();
+                isSelf = msgStruct.SendID == IMSDK.GetLoginUserId();
                 if (isSelf)
                 {
                     itemNode = list.NewListViewItem("self");
@@ -95,7 +117,7 @@ namespace Dawn.Game.UI
                 LoopListViewItem2 itemNode = null;
                 var msgStruct = msgList[(msgList.Count - 1) - index];
                 var isSelf = false;
-                isSelf = msgStruct.SendID == IMSDK.GetLoginUser();
+                isSelf = msgStruct.SendID == IMSDK.GetLoginUserId();
                 if (isSelf)
                 {
                     itemNode = list.NewListViewItem("self");
@@ -114,6 +136,8 @@ namespace Dawn.Game.UI
                 SetChatItemInfo(item, msgStruct, isSelf);
                 return itemNode;
             });
+
+            sendMsgCallBack = new SendMsgCallBack(this);
         }
         ChatItem RegisterChatItem(RectTransform parent)
         {
@@ -134,7 +158,7 @@ namespace Dawn.Game.UI
             node.LayoutElement = node.ContentStrRect.GetComponent<LayoutElement>();
             return node;
         }
-        void SetChatItemInfo(ChatItem item, MsgStruct msgStruct, bool isSelf)
+        void SetChatItemInfo(ChatItem item, Message msgStruct, bool isSelf)
         {
             if (msgStruct.TextElem != null)
             {
@@ -190,7 +214,7 @@ namespace Dawn.Game.UI
         protected override void OnOpen(object userData)
         {
             base.OnOpen(userData);
-            conversation = userData as LocalConversation;
+            conversation = userData as OpenIM.IMSDK.Unity.Conversation;
             if (conversation.UnreadCount > 0)
             {
                 IMSDK.MarkConversationMessageAsRead((suc, err, errMsg) =>
@@ -329,7 +353,6 @@ namespace Dawn.Game.UI
                 requestHistoryStatus = RequestHistoryStatus.Done;
             }, new GetAdvancedHistoryMessageListParams()
             {
-                UserID = conversation.UserID,
                 ConversationID = conversation.ConversationID,
                 Count = count,
                 StartClientMsgID = startMsgId,
@@ -345,35 +368,32 @@ namespace Dawn.Game.UI
                 return;
             }
             var msgStruct = IMSDK.CreateTextMessage(value);
-            IMSDK.SendMessage((msg, errCode, errMsg) =>
-            {
-                if (msg != null)
-                {
-                    msgList.Insert(0, msg);
-                    chatList.gameObject.SetActive(true);
-                    RefreshList(chatList, msgList.Count);
-                    chatList.MovePanelToItemIndex(0, 0);
-                    if (contentRect.sizeDelta.y < listRect.rect.height)
-                    {
-                        chatList.gameObject.SetActive(false);
-                        chatList_topdown.gameObject.SetActive(true);
-                        RefreshList(chatList_topdown, msgList.Count, true);
-                    }
-                    else
-                    {
-                        chatList_topdown.gameObject.SetActive(false);
-                        chatList.gameObject.SetActive(true);
-                    }
-                }
-                else
-                {
-                    Debug.LogError(errCode + "" + errMsg);
-                }
-            }, msgStruct, conversation.UserID, conversation.GroupID, new OfflinePushInfo()
+            IMSDK.SendMessage(sendMsgCallBack, msgStruct, conversation.UserID, conversation.GroupID, new OfflinePushInfo()
             {
             }, true);
             msgInput.text = "";
         }
+
+
+        public void OnSendMsgSuc(Message msg)
+        {
+            msgList.Insert(0, msg);
+            chatList.gameObject.SetActive(true);
+            RefreshList(chatList, msgList.Count);
+            chatList.MovePanelToItemIndex(0, 0);
+            if (contentRect.sizeDelta.y < listRect.rect.height)
+            {
+                chatList.gameObject.SetActive(false);
+                chatList_topdown.gameObject.SetActive(true);
+                RefreshList(chatList_topdown, msgList.Count, true);
+            }
+            else
+            {
+                chatList_topdown.gameObject.SetActive(false);
+                chatList.gameObject.SetActive(true);
+            }
+        }
+
 
         void HandleCreateGroup(object sender, GameEventArgs e)
         {

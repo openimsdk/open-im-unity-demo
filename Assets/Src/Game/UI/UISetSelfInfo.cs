@@ -15,7 +15,7 @@ namespace Dawn.Game.UI
         Button headIconBtn;
         Image headIcon;
         Button saveBtn;
-        LocalUser localUser;
+        UserInfo localUser;
         string headIconURL = "";
         protected override void OnInit(object userData)
         {

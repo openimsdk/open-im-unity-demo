@@ -21,7 +21,7 @@ namespace Dawn.Game.UI
         Button backBtn;
         LoopListView2 searchResList;
         RectTransform searchEmpty;
-        List<FullUserInfo> searchResultListInfo;
+        List<PublicUserInfo> searchResultListInfo;
         protected override void OnInit(object userData)
         {
             base.OnInit(userData);
@@ -49,13 +49,13 @@ namespace Dawn.Game.UI
                     itemNode.IsInitHandlerCalled = true;
                 }
                 SerachResultItem item = itemNode.UserObjectData as SerachResultItem;
-                FullUserInfo info = searchResultListInfo[index];
-                item.Name.text = info.PublicInfo.Nickname;
-                SetImage(item.Icon, info.PublicInfo.FaceURL);
+                PublicUserInfo info = searchResultListInfo[index];
+                item.Name.text = info.Nickname;
+                SetImage(item.Icon, info.FaceURL);
                 OnClick(item.Btn, () =>
                 {
                     CloseSelf();
-                    GameEntry.UI.OpenUI("UserInfo", info.PublicInfo.UserID);
+                    GameEntry.UI.OpenUI("UserInfo", info.UserID);
                 });
                 return itemNode;
             });

@@ -11,7 +11,7 @@ namespace Dawn.Game
         {
         }
 
-        public void OnConversationChanged(List<LocalConversation> conversationList)
+        public void OnConversationChanged(List<OpenIM.IMSDK.Unity.Conversation> conversationList)
         {
             if (conversationList != null)
             {
@@ -26,7 +26,7 @@ namespace Dawn.Game
             }
         }
 
-        public void OnNewConversation(List<LocalConversation> conversationList)
+        public void OnNewConversation(List<OpenIM.IMSDK.Unity.Conversation> conversationList)
         {
             if (conversationList != null)
             {

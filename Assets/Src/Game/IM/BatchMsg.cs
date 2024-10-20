@@ -9,7 +9,7 @@ namespace Dawn.Game
 {
     public class BatchMsg : IBatchMsgListener
     {
-        public void OnRecvNewMessages(List<MsgStruct> messageList)
+        public void OnRecvNewMessages(List<Message> messageList)
         {
             if (messageList != null)
             {
@@ -24,7 +24,7 @@ namespace Dawn.Game
             }
         }
 
-        public void OnRecvOfflineNewMessages(List<MsgStruct> messageList)
+        public void OnRecvOfflineNewMessages(List<Message> messageList)
         {
             if (messageList != null)
             {

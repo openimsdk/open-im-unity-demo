@@ -11,7 +11,7 @@ namespace Dawn.Game
         {
         }
 
-        public void OnGroupApplicationAccepted(LocalGroupRequest groupApplication)
+        public void OnGroupApplicationAccepted(GroupApplicationInfo groupApplication)
         {
             GameEntry.Event.Fire(OnGroupChange.EventId, new OnGroupChange()
             {
@@ -20,7 +20,7 @@ namespace Dawn.Game
             });
         }
 
-        public void OnGroupApplicationAdded(LocalGroupRequest groupApplication)
+        public void OnGroupApplicationAdded(GroupApplicationInfo groupApplication)
         {
             GameEntry.Event.Fire(OnGroupChange.EventId, new OnGroupChange()
             {
@@ -29,7 +29,7 @@ namespace Dawn.Game
             });
         }
 
-        public void OnGroupApplicationDeleted(LocalGroupRequest groupApplication)
+        public void OnGroupApplicationDeleted(GroupApplicationInfo groupApplication)
         {
             GameEntry.Event.Fire(OnGroupChange.EventId, new OnGroupChange()
             {
@@ -38,7 +38,7 @@ namespace Dawn.Game
             });
         }
 
-        public void OnGroupApplicationRejected(LocalGroupRequest groupApplication)
+        public void OnGroupApplicationRejected(GroupApplicationInfo groupApplication)
         {
             GameEntry.Event.Fire(OnGroupChange.EventId, new OnGroupChange()
             {
@@ -47,7 +47,7 @@ namespace Dawn.Game
             });
         }
 
-        public void OnGroupDismissed(LocalGroup groupInfo)
+        public void OnGroupDismissed(GroupInfo groupInfo)
         {
             GameEntry.Event.Fire(OnGroupChange.EventId, new OnGroupChange()
             {
@@ -56,7 +56,7 @@ namespace Dawn.Game
             });
         }
 
-        public void OnGroupInfoChanged(LocalGroup groupInfo)
+        public void OnGroupInfoChanged(GroupInfo groupInfo)
         {
             GameEntry.Event.Fire(OnGroupChange.EventId, new OnGroupChange()
             {
@@ -65,7 +65,7 @@ namespace Dawn.Game
             });
         }
 
-        public void OnGroupMemberAdded(LocalGroupMember groupMemberInfo)
+        public void OnGroupMemberAdded(GroupMember groupMemberInfo)
         {
             GameEntry.Event.Fire(OnGroupChange.EventId, new OnGroupChange()
             {
@@ -74,7 +74,7 @@ namespace Dawn.Game
             });
         }
 
-        public void OnGroupMemberDeleted(LocalGroupMember groupMemberInfo)
+        public void OnGroupMemberDeleted(GroupMember groupMemberInfo)
         {
             GameEntry.Event.Fire(OnGroupChange.EventId, new OnGroupChange()
             {
@@ -83,7 +83,7 @@ namespace Dawn.Game
             });
         }
 
-        public void OnGroupMemberInfoChanged(LocalGroupMember groupMemberInfo)
+        public void OnGroupMemberInfoChanged(GroupMember groupMemberInfo)
         {
             GameEntry.Event.Fire(OnGroupChange.EventId, new OnGroupChange()
             {
@@ -92,7 +92,7 @@ namespace Dawn.Game
             });
         }
 
-        public void OnJoinedGroupAdded(LocalGroup groupInfo)
+        public void OnJoinedGroupAdded(GroupInfo groupInfo)
         {
             GameEntry.Event.Fire(OnGroupChange.EventId, new OnGroupChange()
             {
@@ -101,7 +101,7 @@ namespace Dawn.Game
             });
         }
 
-        public void OnJoinedGroupDeleted(LocalGroup groupInfo)
+        public void OnJoinedGroupDeleted(GroupInfo groupInfo)
         {
             GameEntry.Event.Fire(OnGroupChange.EventId, new OnGroupChange()
             {

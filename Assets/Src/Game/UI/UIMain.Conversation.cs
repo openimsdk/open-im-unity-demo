@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using OpenIM.IMSDK.Unity;
 using SuperScrollView;
 using TMPro;
 using UnityEngine;
@@ -7,6 +6,7 @@ using UnityEngine.UI;
 using System;
 using Dawn.Game.Event;
 using GameFramework.Event;
+using OpenIM.IMSDK.Unity;
 
 namespace Dawn.Game.UI
 {
@@ -28,7 +28,7 @@ namespace Dawn.Game.UI
         }
         RectTransform conversationRoot;
         LoopListView2 conversationList;
-        List<LocalConversation> localConversations;
+        List<OpenIM.IMSDK.Unity.Conversation> localConversations;
         void InitConversation()
         {
             conversationRoot = GetRectTransform("Panel/content/center/conversation");
@@ -95,7 +95,7 @@ namespace Dawn.Game.UI
             });
         }
 
-        void SetConversationItemInfo(ConversationItem item, LocalConversation conversation)
+        void SetConversationItemInfo(ConversationItem item, OpenIM.IMSDK.Unity.Conversation conversation)
         {
             item.Name.text = conversation.ShowName;
             SetImage(item.Icon, conversation.FaceURL);
@@ -104,7 +104,7 @@ namespace Dawn.Game.UI
             DateTimeOffset dateTimeOffset = DateTimeOffset.FromUnixTimeMilliseconds(conversation.LatestMsgSendTime);
             DateTime localDateTime = dateTimeOffset.LocalDateTime;
             item.Time.text = localDateTime.ToShortTimeString();
-            MsgStruct msg = OpenIM.IMSDK.Unity.Util.Utils.FromJson<MsgStruct>(conversation.LatestMsg);
+            Message msg = OpenIM.IMSDK.Unity.Util.Utils.FromJson<Message>(conversation.LatestMsg);
             if (msg != null && msg.TextElem != null)
             {
                 item.Msg.text = msg.TextElem.Content;

@@ -100,7 +100,7 @@ namespace Dawn.Game.UI
 
         void RefreshUnRead()
         {
-            IMSDK.GetTotalUnreadMsgCount((unreadCount) =>
+            IMSDK.GetTotalUnreadMsgCount((unreadCount, errCode, errMsg) =>
             {
                 unRead.gameObject.SetActive(unreadCount > 0);
                 if (unreadCount > 0)

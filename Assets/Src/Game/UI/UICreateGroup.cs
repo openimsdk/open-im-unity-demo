@@ -25,7 +25,7 @@ namespace Dawn.Game.UI
         Image faceIcon;
         TMP_InputField groupNameInput;
         LoopListView2 memberList;
-        List<FullUserInfo> selectMembers;
+        List<FriendInfo> selectFriends;
         string selectIcon = "";
         protected override void OnInit(object userData)
         {
@@ -38,7 +38,7 @@ namespace Dawn.Game.UI
             createBtn = GetButton("Panel/content/center/createbtn/btn");
             memberList = GetListView("Panel/content/center/members/list");
 
-            selectMembers = new List<FullUserInfo>();
+            selectFriends = new List<FriendInfo>();
             memberList.InitListView(0, (list, index) =>
             {
                 if (index < 0) return null;
@@ -55,17 +55,9 @@ namespace Dawn.Game.UI
                     itemNode.IsInitHandlerCalled = true;
                 }
                 MemeberItem item = itemNode.UserObjectData as MemeberItem;
-                var info = selectMembers[index];
-                if (info.PublicInfo != null)
-                {
-                    SetImage(item.Icon, info.PublicInfo.FaceURL);
-                    item.Name.text = info.PublicInfo.Nickname;
-                }
-                else if (info.FriendInfo != null)
-                {
-                    SetImage(item.Icon, info.FriendInfo.FaceURL);
-                    item.Name.text = info.FriendInfo.Nickname;
-                }
+                var info = selectFriends[index];
+                SetImage(item.Icon, info.FaceURL);
+                item.Name.text = info.Nickname;
                 return itemNode;
             });
         }
@@ -79,7 +71,7 @@ namespace Dawn.Game.UI
             });
             OnClick(inviteBtn, () =>
             {
-                GameEntry.UI.OpenUI("SelectMember", (OnSelectMember)OnSelectMember);
+                GameEntry.UI.OpenUI("SelectMember", (OnSelectFriends)OnSelectFriends);
             });
             OnClick(faceBtn, () =>
             {
@@ -92,22 +84,15 @@ namespace Dawn.Game.UI
                     GameEntry.UI.Tip("groupName is empty");
                     return;
                 }
-                if (selectMembers.Count <= 0)
+                if (selectFriends.Count <= 0)
                 {
                     GameEntry.UI.Tip("not select members");
                     return;
                 }
                 List<string> membersId = new List<string>();
-                foreach (var userInfo in selectMembers)
+                foreach (var userInfo in selectFriends)
                 {
-                    if (userInfo.PublicInfo != null)
-                    {
-                        membersId.Add(userInfo.PublicInfo.UserID);
-                    }
-                    else if (userInfo.FriendInfo != null)
-                    {
-                        membersId.Add(userInfo.FriendInfo.FriendUserID);
-                    }
+                    membersId.Add(userInfo.FriendUserID);
                 }
                 IMSDK.CreateGroup((groupInfo, err, errMsg) =>
                 {
@@ -124,8 +109,8 @@ namespace Dawn.Game.UI
                 {
                     MemberUserIDs = membersId.ToArray(),
                     AdminUserIDs = null,
-                    OwnerUserID = IMSDK.GetLoginUser(),
-                    GroupInfo = new LocalGroup()
+                    OwnerUserID = IMSDK.GetLoginUserId(),
+                    GroupInfo = new GroupInfo()
                     {
                         GroupType = (int)GroupType.Group,
                         GroupName = groupNameInput.text,
@@ -145,12 +130,12 @@ namespace Dawn.Game.UI
             SetImage(faceIcon, url);
             selectIcon = url;
         }
-        void OnSelectMember(FullUserInfo[] selectUsers)
+        void OnSelectFriends(FriendInfo[] list)
         {
-            if (selectUsers.Length <= 0) return;
-            selectMembers.Clear();
-            selectMembers.AddRange(selectUsers);
-            RefreshList(memberList, selectMembers.Count);
+            if (list.Length <= 0) return;
+            selectFriends.Clear();
+            selectFriends.AddRange(list);
+            RefreshList(memberList, selectFriends.Count);
         }
     }
 }
