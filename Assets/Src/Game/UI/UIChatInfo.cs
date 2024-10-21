@@ -29,11 +29,11 @@ namespace Dawn.Game.UI
         RectTransform groupExitRect;
         Button groupExitBtn;
 
-        LocalConversation conversation;// 在创建群组时会用到
-        LocalConversation createdConversation;
-        List<LocalGroupMember> membersInfo;
+        OpenIM.IMSDK.Unity.Conversation conversation;
+        OpenIM.IMSDK.Unity.Conversation createdConversation;
+        List<GroupMember> membersInfo;
 
-        LocalGroup localGroup;
+        GroupInfo localGroup;
 
         protected override void OnInit(object userData)
         {
@@ -70,7 +70,7 @@ namespace Dawn.Game.UI
                     item.Name.text = "";
                     OnClick(item.Btn, () =>
                     {
-                        GameEntry.UI.OpenUI("SelectMember", (OnSelectMember)OnSelectMember);
+                        GameEntry.UI.OpenUI("SelectMember", (OnSelectFriends)OnSelectFriends);
                     });
                 }
                 else
@@ -97,7 +97,7 @@ namespace Dawn.Game.UI
         protected override void OnOpen(object userData)
         {
             base.OnOpen(userData);
-            conversation = userData as LocalConversation;
+            conversation = userData as OpenIM.IMSDK.Unity.Conversation;
             OnClick(backBtn, () =>
             {
                 CloseSelf();
@@ -143,8 +143,8 @@ namespace Dawn.Game.UI
                 groupNameRect.gameObject.SetActive(false);
                 groupExitRect.gameObject.SetActive(false);
 
-                membersInfo = new List<LocalGroupMember>();
-                membersInfo.Add(new LocalGroupMember()
+                membersInfo = new List<GroupMember>();
+                membersInfo.Add(new GroupMember()
                 {
                     UserID = conversation.UserID,
                     Nickname = conversation.ShowName,
@@ -206,15 +206,15 @@ namespace Dawn.Game.UI
             }
         }
 
-        void OnSelectMember(FullUserInfo[] selectUsers)
+        void OnSelectFriends(FriendInfo[] selectUsers)
         {
             if (selectUsers.Length <= 0) return;
             var name = "";
             var members = new string[selectUsers.Length];
             for (int i = 0; i < selectUsers.Length; i++)
             {
-                name = name + selectUsers[i].FriendInfo.Nickname;
-                members[i] = selectUsers[i].FriendInfo.FriendUserID;
+                name = name + selectUsers[i].Nickname;
+                members[i] = selectUsers[i].FriendUserID;
             }
             if (conversation.ConversationType == (int)ConversationType.Single)
             {
@@ -245,8 +245,8 @@ namespace Dawn.Game.UI
                 {
                     MemberUserIDs = members,
                     AdminUserIDs = members,
-                    OwnerUserID = IMSDK.GetLoginUser(),
-                    GroupInfo = new LocalGroup()
+                    OwnerUserID = IMSDK.GetLoginUserId(),
+                    GroupInfo = new GroupInfo()
                     {
                         GroupType = (int)GroupType.Group,
                         GroupName = name,

@@ -22,7 +22,7 @@ namespace Dawn.Game.Event
         }
         public bool Created;
         public bool ClearHistory;
-        public LocalConversation Conversation;
+        public OpenIM.IMSDK.Unity.Conversation Conversation;
         public SyncServerStatus SyncServerStatus = SyncServerStatus.Empty;
         public bool IsTotalUnReadChanged;
         public override void Clear()

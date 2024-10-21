@@ -8,7 +8,7 @@ namespace Dawn.Game
 {
     public class AdvancedMsg : IAdvancedMsgListener
     {
-        public void OnMsgDeleted(MsgStruct message)
+        public void OnMsgDeleted(Message message)
         {
             GameEntry.Event.Fire(OnAdvancedMsg.EventId, new OnAdvancedMsg()
             {
@@ -58,15 +58,15 @@ namespace Dawn.Game
         {
         }
 
-        public void OnRecvNewMessage(MsgStruct message)
+        public void OnRecvNewMessage(Message message)
         {
         }
 
-        public void OnRecvOfflineNewMessage(MsgStruct message)
+        public void OnRecvOfflineNewMessage(Message message)
         {
         }
 
-        public void OnRecvOnlineOnlyMessage(MsgStruct message)
+        public void OnRecvOnlineOnlyMessage(Message message)
         {
         }
     }

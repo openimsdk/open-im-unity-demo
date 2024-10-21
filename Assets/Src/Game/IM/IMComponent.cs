@@ -27,8 +27,12 @@ namespace Dawn.Game
                 IsLogStandardOutput = true,
                 IsExternalExtensions = true,
             };
-            var res = IMSDK.InitSDK(config, Player.Instance.GetListenGroup());
-            if (!res)
+            var res = IMSDK.InitSDK(config, Player.Instance.conn);
+            if (res)
+            {
+                Player.Instance.RegisterListener();
+            }
+            else
             {
                 Debug.Log("InitSDK:" + false);
             }

@@ -17,7 +17,7 @@ namespace Dawn.Game.Event
             }
         }
         public bool IsOffline;
-        public MsgStruct Msg;
+        public Message Msg;
 
         public override void Clear()
         {

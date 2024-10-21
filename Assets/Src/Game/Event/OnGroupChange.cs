@@ -33,12 +33,11 @@ namespace Dawn.Game.Event
             }
         }
         public GroupOperation Operation;
-        //通过会话创建的群聊
-        public LocalConversation OldConversation;
-        public LocalConversation NewConversation;
-        public LocalGroup Group;
-        public LocalGroupRequest GroupRequest;
-        public LocalGroupMember GroupMemeber;
+        public OpenIM.IMSDK.Unity.Conversation OldConversation;
+        public OpenIM.IMSDK.Unity.Conversation NewConversation;
+        public GroupInfo Group;
+        public GroupApplicationInfo GroupRequest;
+        public GroupMember GroupMemeber;
         public override void Clear()
         {
             Operation = GroupOperation.None;

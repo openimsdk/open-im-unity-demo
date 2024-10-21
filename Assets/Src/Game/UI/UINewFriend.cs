@@ -23,13 +23,13 @@ namespace Dawn.Game.UI
         }
         Button backBtn;
         LoopListView2 requestList;
-        List<LocalFriendRequest> requestInfoList;
+        List<FriendApplicationInfo> requestInfoList;
         protected override void OnInit(object userData)
         {
             base.OnInit(userData);
             backBtn = GetButton("Panel/content/top/back");
             requestList = GetListView("Panel/content/list");
-            requestInfoList = new List<LocalFriendRequest>();
+            requestInfoList = new List<FriendApplicationInfo>();
             requestList.InitListView(0, (list, index) =>
             {
                 if (index < 0)
@@ -93,7 +93,7 @@ namespace Dawn.Game.UI
                 });
                 item.Name.text = null;
                 item.Icon.sprite = null;
-                if (info.FromUserID == IMSDK.GetLoginUser())
+                if (info.FromUserID == IMSDK.GetLoginUserId())
                 {
                     item.Name.text = info.ToNickname;
                     SetImage(item.Icon, info.ToFaceURL);

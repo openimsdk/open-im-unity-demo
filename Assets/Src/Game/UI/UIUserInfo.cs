@@ -60,7 +60,7 @@ namespace Dawn.Game.UI
 
             userIcon.sprite = null;
             userName.text = "";
-            if (userId == IMSDK.GetLoginUser())
+            if (userId == IMSDK.GetLoginUserId())
             {
                 IMSDK.GetSelfUserInfo((userInfo, err, errMsg) =>
                 {
@@ -87,8 +87,8 @@ namespace Dawn.Game.UI
                         if (list.Count >= 1)
                         {
                             var userInfo = list[0];
-                            SetImage(userIcon, userInfo.PublicInfo.FaceURL);
-                            userName.text = userInfo.PublicInfo.Nickname;
+                            SetImage(userIcon, userInfo.FaceURL);
+                            userName.text = userInfo.Nickname;
                         }
                     }
                     else
@@ -118,7 +118,7 @@ namespace Dawn.Game.UI
                                     {
                                         Debug.LogError(err + ":" + errMsg);
                                     }
-                                }, (int)ConversationType.Single, userId);
+                                }, ConversationType.Single, userId);
                             });
                         }
                         else
@@ -139,7 +139,7 @@ namespace Dawn.Game.UI
                                     }
                                 }, new ApplyToAddFriendReq()
                                 {
-                                    FromUserID = IMSDK.GetLoginUser(),
+                                    FromUserID = IMSDK.GetLoginUserId(),
                                     ToUserID = userId,
                                     ReqMsg = reqMsg.text,
                                     Ex = "",

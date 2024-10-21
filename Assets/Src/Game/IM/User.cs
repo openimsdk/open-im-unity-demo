@@ -8,7 +8,7 @@ namespace Dawn.Game
 {
     public class User : IUserListener
     {
-        public void OnSelfInfoUpdated(LocalUser userInfo)
+        public void OnSelfInfoUpdated(UserInfo userInfo)
         {
         }
 

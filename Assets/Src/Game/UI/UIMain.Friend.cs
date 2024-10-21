@@ -23,8 +23,7 @@ namespace Dawn.Game.UI
         Button groupBtn;
         Button newFriendBtn;
         LoopListView2 friendList;
-
-        List<FullUserInfo> userInfos;
+        List<FriendInfo> friends;
         void InitFriend()
         {
             friendRoot = GetRectTransform("Panel/content/center/friend");
@@ -51,15 +50,15 @@ namespace Dawn.Game.UI
                     itemNode.IsInitHandlerCalled = true;
                 }
                 FriendItem item = itemNode.UserObjectData as FriendItem;
-                var info = userInfos[index];
-                item.Name.text = info.FriendInfo.Nickname;
-                if (info.FriendInfo.FaceURL != "")
+                var info = friends[index];
+                item.Name.text = info.Nickname;
+                if (info.FaceURL != "")
                 {
-                    SetImage(item.Icon, info.FriendInfo.FaceURL);
+                    SetImage(item.Icon, info.FaceURL);
                 }
                 OnClick(item.Btn, () =>
                 {
-                    GameEntry.UI.OpenUI("UserInfo", info.FriendInfo.FriendUserID);
+                    GameEntry.UI.OpenUI("UserInfo", info.FriendUserID);
                 });
                 return itemNode;
             });
@@ -85,8 +84,8 @@ namespace Dawn.Game.UI
             {
                 if (list != null)
                 {
-                    userInfos = list;
-                    RefreshList(friendList, userInfos.Count);
+                    friends = list;
+                    RefreshList(friendList, friends.Count);
                 }
                 else
                 {

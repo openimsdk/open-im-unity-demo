@@ -22,14 +22,14 @@ namespace Dawn.Game.UI
         Button backBtn;
         Button createGroupBtn;
         LoopListView2 groupList;
-        List<LocalGroup> groupListInfo;
+        List<GroupInfo> groupListInfo;
         protected override void OnInit(object userData)
         {
             base.OnInit(userData);
             backBtn = GetButton("Panel/content/top/back");
             createGroupBtn = GetButton("Panel/content/top/create");
             groupList = GetListView("Panel/content/list");
-            groupListInfo = new List<LocalGroup>();
+            groupListInfo = new List<GroupInfo>();
             groupList.InitListView(0, (list, index) =>
             {
                 if (index < 0) return null;
