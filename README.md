@@ -40,4 +40,4 @@ A OpenIM Unity demo. Currently supports Windows, Android, iOS, Mac.
 
 ## License :page_facing_up:
 
-This repository is licensed under the GNU Affero General Public License version 3 (AGPL-3.0) and is subject to the following additional terms. Commercial use is not permitted. Please refer to [here]((./LICENSE)) for details.
+This repository is licensed under the GNU Affero General Public License version 3 (AGPL-3.0) and is subject to the following additional terms. Commercial use is not permitted. Please refer to [here](./LICENSE) for details.
