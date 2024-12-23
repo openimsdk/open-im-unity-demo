@@ -37,3 +37,7 @@ A OpenIM Unity demo. Currently supports Windows, Android, iOS, Mac.
 - 💕 [OpenIM Interest Group](https://github.com/Openim-sigs)
 - 🚀 [Join our Slack community](https://join.slack.com/t/openimsdk/shared_invite/zt-22720d66b-o_FvKxMTGXtcnnnHiMqe9Q)
 - :eyes: [Join our wechat (微信群)](https://openim-1253691595.cos.ap-nanjing.myqcloud.com/WechatIMG20.jpeg)
+
+## License :page_facing_up:
+
+This repository is licensed under the GNU Affero General Public License version 3 (AGPL-3.0) and is subject to the following additional terms. Commercial use is not permitted. Please refer to [here]((./LICENSE)) for details.
