@@ -98,15 +98,15 @@ namespace Dawn.Game.UI
                     item.Name.text = info.ToNickname;
                     SetImage(item.Icon, info.ToFaceURL);
                     item.MenuRect.gameObject.SetActive(false);
-                    if (info.HandleResult == (int)HandleResult.Unprocessed)
+                    if (info.HandleResult == HandleResult.Unprocessed)
                     {
                         item.Tip.text = "待同意";
                     }
-                    else if (info.HandleResult == (int)HandleResult.Agree)
+                    else if (info.HandleResult == HandleResult.Agree)
                     {
                         item.Tip.text = "已同意";
                     }
-                    else if (info.HandleResult == (int)HandleResult.Reject)
+                    else if (info.HandleResult == HandleResult.Reject)
                     {
                         item.Tip.text = "已拒绝";
                     }
@@ -115,17 +115,17 @@ namespace Dawn.Game.UI
                 {
                     item.Name.text = info.FromNickname;
                     SetImage(item.Icon, info.FromFaceURL);
-                    if (info.HandleResult == (int)HandleResult.Unprocessed)
+                    if (info.HandleResult == HandleResult.Unprocessed)
                     {
                         item.Tip.text = "";
                         item.MenuRect.gameObject.SetActive(true);
                     }
-                    else if (info.HandleResult == (int)HandleResult.Agree)
+                    else if (info.HandleResult == HandleResult.Agree)
                     {
                         item.Tip.text = "已同意";
                         item.MenuRect.gameObject.SetActive(false);
                     }
-                    else if (info.HandleResult == (int)HandleResult.Reject)
+                    else if (info.HandleResult == HandleResult.Reject)
                     {
                         item.Tip.text = "已拒绝";
                         item.MenuRect.gameObject.SetActive(false);

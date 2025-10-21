@@ -8,8 +8,9 @@ namespace Dawn.Game
 {
     public class IMComponent : GameFrameworkComponent
     {
-        public string wsAddr = "ws://192.168.101.9:10001";
-        public string apiAddr = "http://192.168.101.9:10002";
+        public string wsAddr = "ws://127.0.0.1:10001";
+        public string apiAddr = "http://127.0.0.1:10002";
+        public string authAddr = "http://127.0.0.1:10008";
         public string dataDir = "./OpenIM";
         public string logDir = "./OpenIM/Logs";
         public uint logLevel = 5;

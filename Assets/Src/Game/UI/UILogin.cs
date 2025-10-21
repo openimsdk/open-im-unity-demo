@@ -1,38 +1,36 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Networking;
 using TMPro;
 using UnityEngine.UI;
 using Dawn.Game.Event;
-using System.Text;
 using GameFramework.Event;
 
 namespace Dawn.Game.UI
 {
     public class UILogin : UGuiForm
     {
-        TMP_InputField userId;
-        TMP_InputField token;
+        TMP_InputField account;
+        TMP_InputField password;
         Button loginBtn;
         Button registerBtn;
-        Button requestTokenBtn;
 
         protected override void OnInit(object userData)
         {
             base.OnInit(userData);
-            userId = GetInputField("Panel/userId/input");
-            token = GetInputField("Panel/token/input");
+            account = GetInputField("Panel/account/input");
+            password = GetInputField("Panel/password/input");
             loginBtn = GetButton("Panel/login");
             registerBtn = GetButton("Panel/register");
-
-            requestTokenBtn = GetButton("Panel/token/requesttoken");
         }
         protected override void OnOpen(object userData)
         {
             base.OnOpen(userData);
 
-            userId.text = GameEntry.Setting.GetString("lastUserId", "");
-            token.text = GameEntry.Setting.GetString("lastUserToken", "");
+            var lastAccount = GameEntry.Setting.GetString("lastAccount", string.Empty);
+            account.text = lastAccount;
+            password.text = string.Empty;
             OnClick(loginBtn, () =>
             {
                 login();
@@ -42,11 +40,6 @@ namespace Dawn.Game.UI
                 GameEntry.UI.OpenUI("Register");
             });
 
-            OnClick(requestTokenBtn, () =>
-            {
-                StartCoroutine(RefreshToken());
-            });
-
             GameEntry.Event.Subscribe(OnRegisterUser.EventId, HandleRegisterUser);
         }
 
@@ -54,79 +47,121 @@ namespace Dawn.Game.UI
         {
             base.OnClose(isShutdown, userData);
             GameEntry.Event.Unsubscribe(OnRegisterUser.EventId, HandleRegisterUser);
-
-            GameEntry.Setting.SetString("lastUserId", userId.text);
-            GameEntry.Setting.SetString("lastUserToken", token.text);
+            GameEntry.Setting.SetString("lastAccount", account.text.Trim());
             GameEntry.Setting.Save();
         }
 
         void login()
         {
-            if (userId.text == "")
+            var phoneoremail = account.text.Trim();
+            var pwd = password.text;
+            if (phoneoremail == string.Empty)
             {
-                GameEntry.UI.Tip("UserId is Empty");
+                GameEntry.UI.Tip("Phone number or email is required.");
                 return;
             }
-            if (token.text == "")
+            if (pwd == string.Empty)
             {
-                GameEntry.UI.Tip("Token is Empty");
+                GameEntry.UI.Tip("Password is required.");
                 return;
             }
-            Player.Instance.Login(userId.text, token.text);
+            if (!Tools.IsEmail(phoneoremail) && !Tools.IsPhone(phoneoremail))
+            {
+                GameEntry.UI.Tip("Please enter a valid phone number or email.");
+                return;
+            }
+            StartCoroutine(LoginWithPassword(phoneoremail, pwd));
         }
 
         void HandleRegisterUser(object sender, GameEventArgs e)
         {
             var args = e as OnRegisterUser;
-            userId.text = args.UserID;
-            StartCoroutine(RefreshToken());
+            account.text = args.UserID;
         }
 
-        IEnumerator RefreshToken()
+        IEnumerator LoginWithPassword(string account, string pwd, string areaCode = "+86")
         {
-            var url = string.Format("{0}{1}", GameEntry.IM.apiAddr, "/auth/get_user_token");
-            Debug.Log(url);
-            var userTokenReq = new UserTokenReq()
+            var requestPayload = new AccountReq
             {
-                secret = "openIM123",
-                platformID = (int)Player.PlatformID,
-                userID = userId.text,
+                password = Tools.HashPassword(pwd),
+                usedFor = AccountOperation.Login,
+                platform = (int)Player.PlatformID,
+                operationID = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString()
             };
-            var reqStr = JsonUtility.ToJson(userTokenReq);
-            Debug.Log(reqStr);
-            var bodyData = Encoding.UTF8.GetBytes(reqStr);
-            UnityWebRequest www = new UnityWebRequest(url, UnityWebRequest.kHttpVerbPOST);
-            DownloadHandler downloadHandler = new DownloadHandlerBuffer();
-            www.downloadHandler = downloadHandler;
-            www.SetRequestHeader("Content-Type", "application/json;charset=utf-8");
-            www.SetRequestHeader("operationID", "123456");
-            www.SetRequestHeader("token", GameEntry.IM.imAdminToken);
-            www.uploadHandler = new UploadHandlerRaw(bodyData);
-            yield return www.SendWebRequest();
-            if (www.result == UnityWebRequest.Result.Success)
+            if (!TryFillAccountContact(requestPayload, account, areaCode))
             {
-                var data = www.downloadHandler.text;
-                Debug.Log(data);
-                var res = JsonUtility.FromJson<UserTokenRes>(data);
-                if (res.errCode > 0)
+                GameEntry.UI.Tip("Please enter a valid phone number or email.");
+                yield break;
+            }
+            var request = Api.CreateRequest<AccountReq>(ChatUrl.Login, requestPayload);
+
+            yield return request.SendWebRequest();
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                var responseJson = request.downloadHandler.text;
+                Debug.Log(responseJson);
+                var res = JsonUtility.FromJson<Base<AccountData>>(responseJson);
+                if (res == null)
                 {
-                    GameEntry.UI.Tip(res.errMsg + ":" + res.errDlt);
+                    GameEntry.UI.Tip("Unexpected login response.");
+                }
+                else if (res.errCode != 0)
+                {
+                    var message = string.IsNullOrEmpty(res.errMsg) ? "Login failed." : res.errMsg;
+                    if (!string.IsNullOrEmpty(res.errDlt))
+                    {
+                        message = string.Format("{0}: {1}", message, res.errDlt);
+                    }
+                    GameEntry.UI.Tip(message);
+                }
+                else if (res.data == null || string.IsNullOrEmpty(res.data.userID) || string.IsNullOrEmpty(res.data.imToken))
+                {
+                    GameEntry.UI.Tip("Login succeeded but no credentials returned.");
                 }
                 else
                 {
-                    var userToken = res.data;
-                    token.text = userToken.token;
+                    GameEntry.Setting.SetString("lastAccount", account);
+                    GameEntry.Setting.Save();
+                    Player.loginCertificate = res.data;
+                    Debug.LogWarningFormat("uid: {0} imToken: {1} chatToken: {2}", res.data.userID, res.data.imToken, res.data.chatToken);
+                    Player.Instance.Login(res.data.userID, res.data.imToken);
                 }
             }
             else
             {
-                var err = $"HTTP request failed with status code {www.responseCode}: {www.error}";
+                var err = $"HTTP request failed with status code {request.responseCode}: {request.error}";
                 GameEntry.UI.Tip(err);
             }
-            www.downloadHandler.Dispose();
-            www.uploadHandler.Dispose();
-            www.Dispose();
+            request.downloadHandler.Dispose();
+            request.uploadHandler.Dispose();
+            request.Dispose();
+        }
+
+        bool TryFillAccountContact(AccountReq payload, string account, string areaCode)
+        {
+            if (payload == null)
+            {
+                return false;
+            }
+
+            payload.email = null;
+            payload.phoneNumber = null;
+            payload.areaCode = null;
+
+            if (Tools.IsEmail(account))
+            {
+                payload.email = account;
+                return true;
+            }
+
+            if (Tools.IsPhone(account))
+            {
+                payload.phoneNumber = account;
+                payload.areaCode = string.IsNullOrEmpty(areaCode) ? "+86" : areaCode;
+                return true;
+            }
+
+            return false;
         }
     }
 }
-
