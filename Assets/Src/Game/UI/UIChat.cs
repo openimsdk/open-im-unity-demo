@@ -183,7 +183,7 @@ namespace Dawn.Game.UI
             {
                 item.ContentArrow.color = Color.white;
                 item.ContentBg.color = Color.white;
-                if (conversation.ConversationType == (int)ConversationType.Single)
+                if (conversation.ConversationType == ConversationType.Single)
                 {
                     item.ReadStatus.text = msgStruct.IsRead ? "已读" : "未读";
                 }
@@ -411,7 +411,7 @@ namespace Dawn.Game.UI
             var msg = args.Msg;
             if (msg != null)
             {
-                if (conversation.ConversationType == (int)ConversationType.Single)
+                if (conversation.ConversationType == ConversationType.Single)
                 {
                     if (conversation.UserID == msg.SendID)
                     {
@@ -419,7 +419,7 @@ namespace Dawn.Game.UI
                         RefreshList(chatList, msgList.Count);
                     }
                 }
-                else if (conversation.ConversationType == (int)ConversationType.Group)
+                else if (conversation.ConversationType == ConversationType.Group)
                 {
                     if (conversation.GroupID == msg.GroupID)
                     {

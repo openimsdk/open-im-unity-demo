@@ -1,6 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -202,6 +205,37 @@ namespace Dawn
             return Screen.height <= height ? 0 : height;
 #endif
         }
+
+        #region 通用工具方法
+        public static string HashPassword(string value)
+        {
+            using (var md5 = MD5.Create())
+            {
+                var bytes = Encoding.UTF8.GetBytes(value);
+                var hashBytes = md5.ComputeHash(bytes);
+                var builder = new StringBuilder(hashBytes.Length * 2);
+                foreach (var b in hashBytes)
+                {
+                    builder.Append(b.ToString("x2"));
+                }
+                return builder.ToString();
+            }
+        }
+        
+        private static readonly Regex EmailRegex = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.Compiled);
+
+        public static bool IsEmail(string value)
+        {
+            return EmailRegex.IsMatch(value);
+        }
+        
+        private static readonly Regex PhoneRegex = new Regex(@"^\d{11}$", RegexOptions.Compiled);
+
+        public static bool IsPhone(string value)
+        {
+            return PhoneRegex.IsMatch(value);
+        }
+        #endregion
     }
 }
 

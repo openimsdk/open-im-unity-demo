@@ -683,6 +683,10 @@ PrefabInstance:
       propertyPath: m_UIGroups.Array.data[1].m_Depth
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 11485274, guid: adb3eb1c35fcff14f89fba7b05c9d71c, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 11499388, guid: adb3eb1c35fcff14f89fba7b05c9d71c, type: 3}
       propertyPath: m_FrameRate
       value: 60
@@ -996,8 +1000,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e632cc193170500418943affb26f1a7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wsAddr: ws://192.168.101.9:10001
-  apiAddr: http://192.168.101.9:10002
+  wsAddr: ws://127.0.0.1:10001
+  apiAddr: http://127.0.0.1:10002
+  authAddr: http://127.0.0.1:10008
   dataDir: ./OpenIM
   logDir: ./OpenIM/Logs
   logLevel: 5
+  imAdminToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOiJpbUFkbWluIiwiUGxhdGZvcm1JRCI6MTAsImV4cCI6MTczNjgxNjM0OCwibmJmIjoxNzI5MDQwMDQ4LCJpYXQiOjE3MjkwNDAzNDh9.ZWbe_KqfRBQyiyN6kt-DQFoWpp2UJwdhgJMMJiYMeKA

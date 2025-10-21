@@ -78,7 +78,7 @@ namespace Dawn.Game.UI
                     var info = membersInfo[index];
                     SetImage(item.Icon, info.FaceURL);
                     item.Name.text = info.Nickname;
-                    if (conversation.ConversationType == (int)ConversationType.Single)
+                    if (conversation.ConversationType == ConversationType.Single)
                     {
 
                     }
@@ -138,7 +138,7 @@ namespace Dawn.Game.UI
         }
         void RefreshUI()
         {
-            if (conversation.ConversationType == (int)ConversationType.Single)
+            if (conversation.ConversationType == ConversationType.Single)
             {
                 groupNameRect.gameObject.SetActive(false);
                 groupExitRect.gameObject.SetActive(false);
@@ -152,7 +152,7 @@ namespace Dawn.Game.UI
                 });
                 RefreshGrid(memberList, membersInfo.Count + 1);
             }
-            else if (conversation.ConversationType == (int)ConversationType.Group)
+            else if (conversation.ConversationType == ConversationType.Group)
             {
                 groupNameRect.gameObject.SetActive(true);
                 groupExitRect.gameObject.SetActive(true);
@@ -216,7 +216,7 @@ namespace Dawn.Game.UI
                 name = name + selectUsers[i].Nickname;
                 members[i] = selectUsers[i].FriendUserID;
             }
-            if (conversation.ConversationType == (int)ConversationType.Single)
+            if (conversation.ConversationType == ConversationType.Single)
             {
 
                 IMSDK.CreateGroup((groupInfo, err, errMsg) =>
@@ -253,7 +253,7 @@ namespace Dawn.Game.UI
                     }
                 });
             }
-            else if (conversation.ConversationType == (int)ConversationType.Group)
+            else if (conversation.ConversationType == ConversationType.Group)
             {
                 IMSDK.InviteUserToGroup((suc, err, errMsg) =>
                 {

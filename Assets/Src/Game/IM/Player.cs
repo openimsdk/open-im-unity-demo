@@ -35,6 +35,7 @@ namespace Dawn.Game
         public AdvancedMsg advancedMsg;
         public BatchMsg batchMsg;
         public User user;
+        public static AccountData loginCertificate {get; set;} = new AccountData();
         private Player()
         {
             conn = new Conn();
